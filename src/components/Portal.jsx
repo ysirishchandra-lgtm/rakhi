@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import confetti from 'canvas-confetti';
-import { Sparkles, Lock, Unlock, HelpCircle, ArrowRight, ArrowLeft, ShieldAlert, User, RotateCcw } from 'lucide-react';
+import { Sparkles, Lock, Unlock, HelpCircle, ArrowRight, ArrowLeft, ShieldAlert, User, RotateCcw, X, Smile } from 'lucide-react';
 import { RECIPIENT_LIST, RECIPIENTS, resetAllProgression } from '../config/recipients';
 import { soundFx } from '../services/soundEffects';
 
@@ -9,6 +10,7 @@ export default function Portal({ onLoginSuccess }) {
   const [nameInput, setNameInput] = useState('');
   const [nameError, setNameError] = useState('');
   const [isNameShaking, setIsNameShaking] = useState(false);
+  const [showNotFoundModal, setShowNotFoundModal] = useState(false);
 
   // Step 2: Selected persona state
   const [selectedRecipient, setSelectedRecipient] = useState(null);
@@ -99,9 +101,11 @@ export default function Portal({ onLoginSuccess }) {
       setPassword('');
       setPasswordError('');
       setShowHint(false);
+      setShowNotFoundModal(false);
     } else {
-      soundFx.playError();
-      setNameError('Name not recognized! Please write a valid member name to enter ✨');
+      soundFx.playJump();
+      setShowNotFoundModal(true);
+      setNameError('');
       setIsNameShaking(true);
       setTimeout(() => setIsNameShaking(false), 500);
     }
@@ -386,6 +390,47 @@ export default function Portal({ onLoginSuccess }) {
           </div>
         )}
       </div>
+
+      {/* ====================================================================
+          NO FOUND POPUP MODAL ("no found.. don't worry be happy 😊")
+          ==================================================================== */}
+      {showNotFoundModal &&
+        createPortal(
+          <div className="modal-backdrop not-found-modal-overlay animate-fade-in" style={{ zIndex: 999999 }}>
+            <div className="not-found-modal-card animate-pop">
+              <button
+                type="button"
+                className="btn-modal-close"
+                onClick={() => setShowNotFoundModal(false)}
+                aria-label="Close modal"
+              >
+                <X size={20} />
+              </button>
+
+              <div className="not-found-icon-bubble animate-bounce">
+                <span className="not-found-emoji">😊</span>
+              </div>
+
+              <h3 className="not-found-title">No found.. don't worry be happy 😊✨</h3>
+              <p className="not-found-desc">
+                This secret portal is specially handcrafted for 5 special friends: <strong>Hanvika</strong>, <strong>Grishma</strong>, <strong>Siri Chaithra (Chiti)</strong>, <strong>Ashwidha</strong>, and <strong>Thanishqa</strong>!
+              </p>
+
+              <button
+                type="button"
+                className="btn-not-found-action"
+                onClick={() => {
+                  soundFx.playClick();
+                  setShowNotFoundModal(false);
+                }}
+              >
+                <Sparkles size={16} />
+                <span>Try Again ✨</span>
+              </button>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }
