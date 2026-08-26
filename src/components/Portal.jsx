@@ -20,48 +20,62 @@ export default function Portal({ onLoginSuccess }) {
   const [showHint, setShowHint] = useState(false);
   const [isUnlocking, setIsUnlocking] = useState(false);
 
-  // Strict Name Matching for the 5 Allowed Recipients
+  // Strict Name Matching for the 5 Allowed Recipients (Exact Names Only)
   const matchRecipientByName = (query) => {
     const q = query.trim().toLowerCase();
     if (!q) return null;
 
     // 1. Thanishqa (White Peacock)
-    const thanishqaKeys = ['thanishqa', 'thanishka', 'tanishqa', 'tanishka', 'thanish', 'tanish', 'thani', 'tani', 'white peacock', 'peacock', 'peaky'];
-    if (thanishqaKeys.some((k) => q === k || q.startsWith(k))) {
+    const thanishqaExact = [
+      'thanishqa', 'thanishka', 'tanishqa', 'tanishka',
+      'thanish', 'tanish', 'thani', 'tani',
+      'white peacock', 'peacock', 'peaky'
+    ];
+    if (thanishqaExact.includes(q)) {
       return RECIPIENTS.peacock;
     }
 
     // 2. Hanvika (Rabbit)
-    const hanvikaKeys = ['hanvika', 'hanvi', 'hani', 'hanu', 'rabbit', 'bunny'];
-    if (hanvikaKeys.some((k) => q === k || q.startsWith(k))) {
+    const hanvikaExact = [
+      'hanvika', 'hanvi', 'hani', 'hanu',
+      'rabbit', 'bunny'
+    ];
+    if (hanvikaExact.includes(q)) {
       return RECIPIENTS.hanvika;
     }
 
     // 3. Grishma (Duck)
-    const grishmaKeys = ['grishma', 'grish', 'duck', 'ducky', 'quack'];
-    if (grishmaKeys.some((k) => q === k || q.startsWith(k))) {
+    const grishmaExact = [
+      'grishma', 'grish', 'duck', 'ducky', 'quack'
+    ];
+    if (grishmaExact.includes(q)) {
       return RECIPIENTS.duck;
     }
 
     // 4. Siri Chaithra (Chiti)
-    const siriKeys = ['siri chaithra', 'siri', 'chaithra', 'chiti', 'chits', 'chithi', 'sister'];
-    if (siriKeys.some((k) => q === k || q.startsWith(k))) {
+    const siriExact = [
+      'siri chaithra', 'siri', 'chaithra', 'chiti',
+      'chits', 'chithi', 'sister'
+    ];
+    if (siriExact.includes(q)) {
       return RECIPIENTS.chiti;
     }
 
     // 5. Ashwidha (Cat)
-    const ashwidhaKeys = ['ashwidha', 'ashwi', 'ash', 'cat', 'kitty', 'meow'];
-    if (ashwidhaKeys.some((k) => q === k || q.startsWith(k))) {
+    const ashwidhaExact = [
+      'ashwidha', 'ashwi', 'ash', 'cat', 'kitty', 'meow'
+    ];
+    if (ashwidhaExact.includes(q)) {
       return RECIPIENTS.cat;
     }
 
-    // Direct match against recipient objects
+    // Direct match against exact recipient fields
     const direct = RECIPIENT_LIST.find(
       (r) => r.name.toLowerCase() === q || r.nickname.toLowerCase() === q || r.id.toLowerCase() === q
     );
     if (direct) return direct;
 
-    // Any other name is NOT found
+    // Any other name strictly returns null
     return null;
   };
 
@@ -79,7 +93,7 @@ export default function Portal({ onLoginSuccess }) {
       setShowHint(false);
       setShowNotFoundModal(false);
     } else {
-      // Unrecognized name ➔ print "no found..be happy" and show popup
+      // Unrecognized name ➔ print "no found..be happy" and show popup modal
       soundFx.playJump();
       setNameError('no found..be happy');
       setShowNotFoundModal(true);
