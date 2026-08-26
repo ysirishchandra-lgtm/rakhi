@@ -18,28 +18,41 @@ export default function Portal({ onLoginSuccess }) {
   const [showHint, setShowHint] = useState(false);
   const [isUnlocking, setIsUnlocking] = useState(false);
 
-  // Find recipient persona from typed text (Supporting all members including Hanvika)
+  // Find recipient persona from typed text (Robust matching for all 5 personas)
   const matchRecipientByName = (query) => {
     const q = query.trim().toLowerCase();
     if (!q) return null;
 
-    // Hanvika (Rabbit)
+    // 1. Thanishqa (White Peacock) - Checked first to avoid collision with 'hani'
+    if (
+      q.includes('thanish') ||
+      q.includes('tanish') ||
+      q.includes('thani') ||
+      q.includes('tani') ||
+      q.includes('peacock') ||
+      q.includes('peaky')
+    ) {
+      return RECIPIENTS.peacock;
+    }
+
+    // 2. Hanvika (Rabbit)
     if (
       q.includes('hanvika') ||
       q.includes('hanvi') ||
-      q.includes('hani') ||
+      q === 'hani' ||
+      q === 'hanu' ||
       q.includes('rabbit') ||
       q.includes('bunny')
     ) {
       return RECIPIENTS.hanvika;
     }
 
-    // Grishma (Duck)
+    // 3. Grishma (Duck)
     if (q.includes('grish') || q.includes('duck') || q.includes('quack')) {
       return RECIPIENTS.duck;
     }
 
-    // Siri Chaithra (Chiti)
+    // 4. Siri Chaithra (Chiti)
     if (
       q.includes('siri') ||
       q.includes('chiti') ||
@@ -51,28 +64,24 @@ export default function Portal({ onLoginSuccess }) {
       return RECIPIENTS.chiti;
     }
 
-    // Ashwidha (Cat)
+    // 5. Ashwidha (Cat)
     if (q.includes('ash') || q.includes('cat') || q.includes('kitty') || q.includes('meow')) {
       return RECIPIENTS.cat;
     }
 
-    // Thanishqa (White Peacock)
-    if (
-      q.includes('thani') ||
-      q.includes('tani') ||
-      q.includes('peacock') ||
-      q.includes('peaky') ||
-      q.includes('white')
-    ) {
-      return RECIPIENTS.peacock;
-    }
+    // 6. Direct exact / substring fallback
+    const exact = RECIPIENT_LIST.find(
+      (r) =>
+        r.name.toLowerCase() === q ||
+        r.nickname.toLowerCase() === q ||
+        r.id.toLowerCase() === q
+    );
+    if (exact) return exact;
 
-    // Fuzzy search in recipient names
     const found = RECIPIENT_LIST.find(
       (r) =>
         r.name.toLowerCase().includes(q) ||
-        r.nickname.toLowerCase().includes(q) ||
-        r.id.toLowerCase().includes(q)
+        r.nickname.toLowerCase().includes(q)
     );
 
     return found || null;
