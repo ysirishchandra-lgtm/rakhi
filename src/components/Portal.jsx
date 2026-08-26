@@ -20,73 +20,49 @@ export default function Portal({ onLoginSuccess }) {
   const [showHint, setShowHint] = useState(false);
   const [isUnlocking, setIsUnlocking] = useState(false);
 
-  // Find recipient persona from typed text (Robust matching for all 5 personas)
+  // Strict Name Matching for the 5 Allowed Recipients
   const matchRecipientByName = (query) => {
     const q = query.trim().toLowerCase();
     if (!q) return null;
 
-    // 1. Thanishqa (White Peacock) - Checked first to avoid collision with 'hani'
-    if (
-      q.includes('thanish') ||
-      q.includes('tanish') ||
-      q.includes('thani') ||
-      q.includes('tani') ||
-      q.includes('peacock') ||
-      q.includes('peaky')
-    ) {
+    // 1. Thanishqa (White Peacock)
+    const thanishqaKeys = ['thanishqa', 'thanishka', 'tanishqa', 'tanishka', 'thanish', 'tanish', 'thani', 'tani', 'white peacock', 'peacock', 'peaky'];
+    if (thanishqaKeys.some((k) => q === k || q.startsWith(k))) {
       return RECIPIENTS.peacock;
     }
 
     // 2. Hanvika (Rabbit)
-    if (
-      q.includes('hanvika') ||
-      q.includes('hanvi') ||
-      q === 'hani' ||
-      q === 'hanu' ||
-      q.includes('rabbit') ||
-      q.includes('bunny')
-    ) {
+    const hanvikaKeys = ['hanvika', 'hanvi', 'hani', 'hanu', 'rabbit', 'bunny'];
+    if (hanvikaKeys.some((k) => q === k || q.startsWith(k))) {
       return RECIPIENTS.hanvika;
     }
 
     // 3. Grishma (Duck)
-    if (q.includes('grish') || q.includes('duck') || q.includes('quack')) {
+    const grishmaKeys = ['grishma', 'grish', 'duck', 'ducky', 'quack'];
+    if (grishmaKeys.some((k) => q === k || q.startsWith(k))) {
       return RECIPIENTS.duck;
     }
 
     // 4. Siri Chaithra (Chiti)
-    if (
-      q.includes('siri') ||
-      q.includes('chiti') ||
-      q.includes('chits') ||
-      q.includes('chithi') ||
-      q.includes('chaithra') ||
-      q.includes('sister')
-    ) {
+    const siriKeys = ['siri chaithra', 'siri', 'chaithra', 'chiti', 'chits', 'chithi', 'sister'];
+    if (siriKeys.some((k) => q === k || q.startsWith(k))) {
       return RECIPIENTS.chiti;
     }
 
     // 5. Ashwidha (Cat)
-    if (q.includes('ash') || q.includes('cat') || q.includes('kitty') || q.includes('meow')) {
+    const ashwidhaKeys = ['ashwidha', 'ashwi', 'ash', 'cat', 'kitty', 'meow'];
+    if (ashwidhaKeys.some((k) => q === k || q.startsWith(k))) {
       return RECIPIENTS.cat;
     }
 
-    // 6. Direct exact / substring fallback
-    const exact = RECIPIENT_LIST.find(
-      (r) =>
-        r.name.toLowerCase() === q ||
-        r.nickname.toLowerCase() === q ||
-        r.id.toLowerCase() === q
+    // Direct match against recipient objects
+    const direct = RECIPIENT_LIST.find(
+      (r) => r.name.toLowerCase() === q || r.nickname.toLowerCase() === q || r.id.toLowerCase() === q
     );
-    if (exact) return exact;
+    if (direct) return direct;
 
-    const found = RECIPIENT_LIST.find(
-      (r) =>
-        r.name.toLowerCase().includes(q) ||
-        r.nickname.toLowerCase().includes(q)
-    );
-
-    return found || null;
+    // Any other name is NOT found
+    return null;
   };
 
   // Step 1: Submit Name Form
@@ -103,9 +79,10 @@ export default function Portal({ onLoginSuccess }) {
       setShowHint(false);
       setShowNotFoundModal(false);
     } else {
+      // Unrecognized name ➔ print "no found..be happy" and show popup
       soundFx.playJump();
+      setNameError('no found..be happy');
       setShowNotFoundModal(true);
-      setNameError('');
       setIsNameShaking(true);
       setTimeout(() => setIsNameShaking(false), 500);
     }
@@ -117,6 +94,7 @@ export default function Portal({ onLoginSuccess }) {
     setPassword('');
     setPasswordError('');
     setShowHint(false);
+    setNameError('');
   };
 
   // Step 2: Submit Password Form
@@ -237,9 +215,10 @@ export default function Portal({ onLoginSuccess }) {
                   </button>
                 </div>
 
+                {/* Inline Message */}
                 {nameError && (
                   <div className="portal-error-banner animate-pop">
-                    <ShieldAlert size={16} />
+                    <Smile size={16} />
                     <span>{nameError}</span>
                   </div>
                 )}
@@ -392,7 +371,7 @@ export default function Portal({ onLoginSuccess }) {
       </div>
 
       {/* ====================================================================
-          NO FOUND POPUP MODAL ("no found.. don't worry be happy 😊")
+          NO FOUND POPUP MODAL ("no found..be happy")
           ==================================================================== */}
       {showNotFoundModal &&
         createPortal(
@@ -411,9 +390,9 @@ export default function Portal({ onLoginSuccess }) {
                 <span className="not-found-emoji">😊</span>
               </div>
 
-              <h3 className="not-found-title">No found.. don't worry be happy 😊✨</h3>
+              <h3 className="not-found-title">no found..be happy 😊✨</h3>
               <p className="not-found-desc">
-                This secret portal is specially handcrafted for 5 special friends: <strong>Hanvika</strong>, <strong>Grishma</strong>, <strong>Siri Chaithra (Chiti)</strong>, <strong>Ashwidha</strong>, and <strong>Thanishqa</strong>!
+                no found..be happy! This secret realm is dedicated to 5 special friends: <strong>Hanvika</strong>, <strong>Grishma</strong>, <strong>Siri Chaithra (Chiti)</strong>, <strong>Ashwidha</strong>, and <strong>Thanishqa</strong>!
               </p>
 
               <button
