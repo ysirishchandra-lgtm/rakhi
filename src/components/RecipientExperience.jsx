@@ -169,10 +169,10 @@ export default function RecipientExperience({ recipient, onLogout }) {
 
   const getWidgetEmoji = (id) => {
     switch (id) {
-      case 'chiti': return '💖';
+      case 'chiti': return '🧸';
       case 'duck': return '🌊';
       case 'cat': return '🐾';
-      case 'peacock': return '🪶';
+      case 'peacock': return '🦚';
       case 'hanvika': return '🥕';
       default: return '✨';
     }

@@ -1,498 +1,454 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { Sparkles, Heart, Trophy, ArrowRight, RotateCcw, CheckCircle2, Award, Timer, Shield, Flame, X } from 'lucide-react';
+import { Sparkles, Trophy, Play, RotateCcw, ArrowLeft, ArrowRight, CheckCircle2, Heart, X, Star, Flame } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { soundFx } from '../../services/soundEffects';
 
 export default function ChitiGame({ recipient, onComplete }) {
-  // Game Levels: 0: Intro, 1: Heart Collector, 2: Memory Room, 3: Rakhi Craft, 4: Sibling Reflex, 5: Heart Rescue, 6: Sacred Oath Ritual, 7: Victory
-  const [level, setLevel] = useState(0);
+  // Stages: 0: Intro, 1: Honey & Heart Catch, 2: Sibling Memory Garden, 3: Rakhi Craft, 4: Victory
+  const [stage, setStage] = useState(0);
   const [score, setScore] = useState(0);
   const [toastMsg, setToastMsg] = useState('');
+  const [combo, setCombo] = useState(0);
+  const [scorePopups, setScorePopups] = useState([]);
 
-  // ----------------------------------------------------
-  // LEVEL 1: Heart Collector State
-  // ----------------------------------------------------
-  const [l1Hearts, setL1Hearts] = useState([]);
-  const [l1Collected, setL1Collected] = useState(0);
-  const [l1Time, setL1Time] = useState(20);
-  const l1TimerRef = useRef(null);
+  // Stage 1: Honey Catcher State
+  const [teddyX, setTeddyX] = useState(50); // percentage (10 - 90)
+  const [fallingItems, setFallingItems] = useState([]);
+  const [itemsCollected, setItemsCollected] = useState(0);
+  const stage1Target = 10;
+  const stage1LoopRef = useRef(null);
+  const stage1SpawnRef = useRef(null);
 
-  // ----------------------------------------------------
-  // LEVEL 2: Sibling Memory Room State
-  // ----------------------------------------------------
-  const MEMORY_ITEMS = [
-    { id: 1, icon: '🍫', name: 'Chocolate' },
-    { id: 2, icon: '📺', name: 'TV Remote' },
-    { id: 3, icon: '🌸', name: 'Blossom' },
-    { id: 4, icon: '📷', name: 'Polaroid' }
+  // Stage 2: Sibling Memory Garden State
+  const MEMORY_CARDS_DEF = [
+    { id: 1, icon: '🧸', name: 'Teddy Bear' },
+    { id: 2, icon: '🎀', name: 'Rakhi Ribbon' },
+    { id: 3, icon: '🍫', name: 'Chocolate' },
+    { id: 4, icon: '📷', name: 'Memory Photo' },
+    { id: 5, icon: '🌸', name: 'Blossom' },
+    { id: 6, icon: '🍯', name: 'Honey Pot' }
   ];
-  const [cards, setCards] = useState([]);
-  const [flippedCards, setFlippedCards] = useState([]);
-  const [matchedCards, setMatchedCards] = useState([]);
+  const [deck, setDeck] = useState([]);
+  const [flippedIndices, setFlippedIndices] = useState([]);
+  const [matchedIds, setMatchedIds] = useState([]);
 
-  // ----------------------------------------------------
-  // LEVEL 3: Rakhi Craft Challenge State
-  // ----------------------------------------------------
-  const CRAFT_SEQUENCE = ['silk_thread', 'blossom_gem', 'golden_bead', 'sister_charm', 'ribbon'];
-  const [craftedParts, setCraftedParts] = useState([]);
-
-  // ----------------------------------------------------
-  // LEVEL 4: Sibling Reflex Challenge State
-  // ----------------------------------------------------
-  const REFLEX_PROMPTS = [
-    {
-      situation: 'Brother sneaks the last chocolate bar!',
-      correctBtn: 'DEFEND CHOCOLATE 🍫',
-      wrongBtn: 'LET IT GO 😇',
-      response: '“Snack defended with 10/10 sister reflexes!” 🍫💨'
-    },
-    {
-      situation: 'Mom asks who left the kitchen lights on!',
-      correctBtn: 'POINT AT BROTHER 👉',
-      wrongBtn: 'CONFESS NOBLY 🛡️',
-      response: '“Guilty brother identified instantly! Master tactical deflection!” 😂'
-    },
-    {
-      situation: 'A terrifying spider crawls across the wall!',
-      correctBtn: 'BEAT WITH SLIPPER 🩴',
-      wrongBtn: 'SCREAM & CRY 😱',
-      response: '“Sister courage activated! Spider defeated in one strike!” 🕷️💥'
-    },
-    {
-      situation: 'Brother offers a peace treaty & ice cream!',
-      correctBtn: 'ACCEPT WITH TOPPINGS 🍦',
-      wrongBtn: 'REFUSE TREATY 🙅‍♀️',
-      response: '“Peace restored with double sprinkles! Brother-Sister truce signed!” 💖'
-    }
+  // Stage 3: Rakhi Craft State
+  const [craftStep, setCraftStep] = useState(0);
+  const CRAFT_STEPS = [
+    { title: 'Weave Golden Silk Threads 🧵', icon: '🧵', desc: 'Spin pure golden and crimson threads with sisterly love!' },
+    { title: 'Place Sparkling Center Gem 💎', icon: '💎', desc: 'Embed a sparkling gemstone in the center of the medallion!' },
+    { title: 'Attach Cuddly Mini Teddy Charm 🧸', icon: '🧸', desc: 'Fasten the adorable sister teddy charm to protect the bond!' },
+    { title: 'Tie Golden Rakhi Ribbon Bow 🎀', icon: '🎀', desc: 'Complete the sacred knot sealed with infinite brotherly protection!' }
   ];
-  const [reflexIndex, setReflexIndex] = useState(0);
-  const [reflexTimer, setReflexTimer] = useState(4);
-  const reflexIntervalRef = useRef(null);
 
-  // ----------------------------------------------------
-  // LEVEL 5: Heart Rescue Maze State
-  // ----------------------------------------------------
-  const [heartPos, setHeartPos] = useState({ x: 20, y: 50 }); // percentage
-  const [clouds, setClouds] = useState([
-    { id: 1, x: 45, y: 25, dy: 1.2 },
-    { id: 2, x: 70, y: 70, dy: -1.4 }
-  ]);
-  const mazeLoopRef = useRef(null);
+  const addScorePopup = (text, x = 50, y = 50, color = '#ff3366') => {
+    const id = Date.now() + Math.random();
+    setScorePopups((prev) => [...prev.slice(-6), { id, text, x, y, color }]);
+    setTimeout(() => {
+      setScorePopups((prev) => prev.filter((p) => p.id !== id));
+    }, 900);
+  };
 
-  // ----------------------------------------------------
-  // LEVEL 6: Sacred Rakhi Oath State
-  // ----------------------------------------------------
-  const [oathStepsCompleted, setOathStepsCompleted] = useState({
-    diya: false,
-    tilak: false,
-    knot: false,
-    sweet: false
-  });
-
-  // Start Quest
   const startQuest = () => {
     soundFx.playClick();
     setScore(0);
-    startLevel1();
-  };
-
-  // ----------------------------------------------------
-  // LEVEL 1: Setup & Loop
-  // ----------------------------------------------------
-  const startLevel1 = () => {
-    setLevel(1);
-    setL1Collected(0);
-    setL1Time(20);
-    setToastMsg('Tap the floating hearts to collect 8 sister energy sparks!');
-    soundFx.playLevelUp();
-
-    // Spawn 5 initial hearts
-    const items = [];
-    for (let i = 0; i < 6; i++) {
-      items.push({
-        id: Math.random(),
-        x: Math.random() * 75 + 10,
-        y: Math.random() * 65 + 15,
-        isThorn: Math.random() < 0.2
-      });
-    }
-    setL1Hearts(items);
-  };
-
-  useEffect(() => {
-    if (level !== 1) return;
-
-    l1TimerRef.current = setInterval(() => {
-      setL1Time((t) => {
-        if (t <= 1) {
-          clearInterval(l1TimerRef.current);
-          if (l1Collected < 8) {
-            soundFx.playError();
-            setToastMsg('Time ran out! Try collecting faster!');
-            setTimeout(startLevel1, 1200);
-          }
-          return 0;
-        }
-        return t - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(l1TimerRef.current);
-  }, [level, l1Collected]);
-
-  const handleL1Tap = (item) => {
-    if (item.isThorn) {
-      soundFx.playHitObstacle();
-      setToastMsg('⚡ Ouch, thorn cloud! -5 pts');
-      setScore((s) => Math.max(0, s - 5));
-    } else {
-      soundFx.playMascot('chiti');
-      const newCount = l1Collected + 1;
-      setL1Collected(newCount);
-      setScore((s) => s + 20);
-
-      if (newCount >= 8) {
-        clearInterval(l1TimerRef.current);
-        soundFx.playLevelUp();
-        setToastMsg('💖 LEVEL 1 CLEARED! Moving to Sibling Memory Room...');
-        setTimeout(startLevel2, 1400);
-      }
-    }
-
-    // Replace item
-    setL1Hearts((prev) => [
-      ...prev.filter((h) => h.id !== item.id),
-      {
-        id: Math.random(),
-        x: Math.random() * 75 + 10,
-        y: Math.random() * 65 + 15,
-        isThorn: Math.random() < 0.2
-      }
-    ]);
-  };
-
-  // ----------------------------------------------------
-  // LEVEL 2: Memory Room Setup
-  // ----------------------------------------------------
-  const startLevel2 = () => {
-    setLevel(2);
-    setFlippedCards([]);
-    setMatchedCards([]);
-    soundFx.playLevelUp();
-    setToastMsg('Flip and match all 4 pairs of sibling memories!');
-
-    const deck = [...MEMORY_ITEMS, ...MEMORY_ITEMS]
-      .map((item, idx) => ({ ...item, uniqueId: idx }))
-      .sort(() => Math.random() - 0.5);
-
-    setCards(deck);
-  };
-
-  const handleCardClick = (card) => {
-    if (flippedCards.length === 2 || flippedCards.some((c) => c.uniqueId === card.uniqueId) || matchedCards.includes(card.id)) {
-      return;
-    }
-
-    soundFx.playClick();
-    const newFlipped = [...flippedCards, card];
-    setFlippedCards(newFlipped);
-
-    if (newFlipped.length === 2) {
-      if (newFlipped[0].id === newFlipped[1].id) {
-        soundFx.playMatchSuccess();
-        setMatchedCards((prev) => [...prev, card.id]);
-        setFlippedCards([]);
-        setScore((s) => s + 30);
-
-        if (matchedCards.length + 1 === MEMORY_ITEMS.length) {
-          soundFx.playLevelUp();
-          setToastMsg('🌸 LEVEL 2 CLEARED! Sibling Memories Restored!');
-          setTimeout(startLevel3, 1400);
-        }
-      } else {
-        soundFx.playError();
-        setTimeout(() => setFlippedCards([]), 900);
-      }
-    }
-  };
-
-  // ----------------------------------------------------
-  // LEVEL 3: Rakhi Craft Setup
-  // ----------------------------------------------------
-  const startLevel3 = () => {
-    setLevel(3);
-    setCraftedParts([]);
-    soundFx.playLevelUp();
-    setToastMsg('Assemble the components in order: Silk Thread 🧵 ➔ Blossom Gem 🌸 ➔ Golden Bead ✨ ➔ Sister Charm 💖 ➔ Ribbon 🎀');
-  };
-
-  const handleCraftPart = (partKey) => {
-    const nextExpected = CRAFT_SEQUENCE[craftedParts.length];
-    if (partKey === nextExpected) {
-      soundFx.playMascot('chiti');
-      const newCrafted = [...craftedParts, partKey];
-      setCraftedParts(newCrafted);
-      setScore((s) => s + 25);
-
-      if (newCrafted.length === CRAFT_SEQUENCE.length) {
-        soundFx.playLevelUp();
-        setToastMsg('🎀 LEVEL 3 CLEARED! Royal Sister Rakhi Assembled!');
-        setTimeout(startLevel4, 1400);
-      }
-    } else {
-      soundFx.playError();
-      setToastMsg('Oops! That component belongs in a different step.');
-    }
-  };
-
-  // ----------------------------------------------------
-  // LEVEL 4: Sibling Reflex Setup
-  // ----------------------------------------------------
-  const startLevel4 = () => {
-    setLevel(4);
-    setReflexIndex(0);
-    setReflexTimer(4);
-    soundFx.playLevelUp();
-    setToastMsg('React with quick sister reflexes before time runs out!');
-  };
-
-  useEffect(() => {
-    if (level !== 4) return;
-
-    reflexIntervalRef.current = setInterval(() => {
-      setReflexTimer((t) => {
-        if (t <= 1) {
-          // Missed reflex
-          soundFx.playHitObstacle();
-          handleReflexChoice(false);
-          return 4;
-        }
-        return t - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(reflexIntervalRef.current);
-  }, [level, reflexIndex]);
-
-  const handleReflexChoice = (isCorrect) => {
-    clearInterval(reflexIntervalRef.current);
-
-    if (isCorrect) {
-      soundFx.playMatchSuccess();
-      setScore((s) => s + 35);
-      setToastMsg(REFLEX_PROMPTS[reflexIndex].response);
-    } else {
-      soundFx.playError();
-      setToastMsg('Too slow or brother got away! Quick on the next one!');
-    }
-
-    setTimeout(() => {
-      if (reflexIndex + 1 < REFLEX_PROMPTS.length) {
-        setReflexIndex((prev) => prev + 1);
-        setReflexTimer(4);
-      } else {
-        soundFx.playLevelUp();
-        setToastMsg('⚡ LEVEL 4 CLEARED! Sibling Reflex Master!');
-        setTimeout(startLevel5, 1400);
-      }
-    }, 1200);
-  };
-
-  // ----------------------------------------------------
-  // LEVEL 5: Heart Rescue Setup
-  // ----------------------------------------------------
-  const startLevel5 = () => {
-    setLevel(5);
-    setHeartPos({ x: 15, y: 50 });
-    soundFx.playLevelUp();
-    setToastMsg('Guide the sacred Lost Heart to the Golden Altar on the right! Avoid storm clouds!');
-  };
-
-  // Move clouds & collision
-  useEffect(() => {
-    if (level !== 5) return;
-
-    mazeLoopRef.current = setInterval(() => {
-      setClouds((prev) =>
-        prev.map((c) => {
-          let ny = c.y + c.dy;
-          let ndy = c.dy;
-          if (ny <= 15 || ny >= 80) ndy = -c.dy;
-          return { ...c, y: ny, dy: ndy };
-        })
-      );
-    }, 40);
-
-    return () => clearInterval(mazeLoopRef.current);
-  }, [level]);
-
-  const moveHeart = (dx, dy) => {
-    soundFx.playClick();
-    const nx = Math.max(10, Math.min(90, heartPos.x + dx));
-    const ny = Math.max(15, Math.min(85, heartPos.y + dy));
-
-    // Collision with storm clouds
-    const hitCloud = clouds.some(
-      (c) => Math.hypot(c.x - nx, c.y - ny) < 14
-    );
-
-    if (hitCloud) {
-      soundFx.playHitObstacle();
-      setToastMsg('⚡ Storm cloud collision! Resetting heart position...');
-      setHeartPos({ x: 15, y: 50 });
-      return;
-    }
-
-    setHeartPos({ x: nx, y: ny });
-
-    // Reach Golden Altar (x >= 82)
-    if (nx >= 82) {
-      soundFx.playLevelUp();
-      setScore((s) => s + 50);
-      setToastMsg('💖 LEVEL 5 CLEARED! Heart Delivered to the Altar!');
-      setTimeout(startLevel6, 1400);
-    }
-  };
-
-  // ----------------------------------------------------
-  // LEVEL 6: Sacred Rakhi Oath Setup
-  // ----------------------------------------------------
-  const startLevel6 = () => {
-    setLevel(6);
-    setOathStepsCompleted({ diya: false, tilak: false, knot: false, sweet: false });
-    soundFx.playLevelUp();
-    setToastMsg('Complete the 4 sacred Rakhi steps to activate the grand blessing!');
-  };
-
-  const handleOathStep = (stepKey) => {
-    soundFx.playMascot('chiti');
-    const updated = { ...oathStepsCompleted, [stepKey]: true };
-    setOathStepsCompleted(updated);
-    setScore((s) => s + 25);
-
-    if (updated.diya && updated.tilak && updated.knot && updated.sweet) {
-      // Grand finale victory!
-      soundFx.playGameWin();
-      setLevel(7);
-
-      confetti({
-        particleCount: 150,
-        spread: 90,
-        origin: { y: 0.55 },
-        colors: ['#ff3366', '#ff758c', '#ffd166', '#ffffff']
-      });
-
-      if (onComplete) {
-        onComplete(score + 100);
-      }
-    }
+    setCombo(0);
+    startStage1();
   };
 
   const exitGame = () => {
     soundFx.playClick();
-    setLevel(0);
+    setStage(0);
+    clearInterval(stage1LoopRef.current);
+    clearInterval(stage1SpawnRef.current);
+  };
+
+  // ----------------------------------------------------
+  // STAGE 1: HONEY & HEART HARVEST
+  // ----------------------------------------------------
+  const startStage1 = () => {
+    setStage(1);
+    setFallingItems([]);
+    setItemsCollected(0);
+    setCombo(0);
+    setToastMsg('Catch 10 sweet honey pots 🍯 and sister hearts 💖 with Teddy!');
+    soundFx.playLevelUp();
+
+    // Spawner
+    stage1SpawnRef.current = setInterval(() => {
+      const types = [
+        { icon: '🍯', pts: 50, speed: 1.5, label: '+50' },
+        { icon: '💖', pts: 80, speed: 1.6, label: 'LOVE! +80' },
+        { icon: '🍫', pts: 60, speed: 1.7, label: '+60' },
+        { icon: '🌸', pts: 40, speed: 1.4, label: '+40' },
+        { icon: '⭐', pts: 100, speed: 2.0, label: 'SPARKLE! +100' }
+      ];
+      const selected = types[Math.floor(Math.random() * types.length)];
+      const newItem = {
+        id: Math.random(),
+        x: Math.random() * 80 + 10,
+        y: 0,
+        ...selected
+      };
+      setFallingItems((prev) => [...prev.slice(-8), newItem]);
+    }, 1100);
+
+    // Physics Loop
+    stage1LoopRef.current = setInterval(() => {
+      setFallingItems((prev) => {
+        const nextList = [];
+        for (const item of prev) {
+          const nextY = item.y + item.speed * 2.2;
+          // Check collision with Teddy at bottom
+          if (nextY >= 78 && nextY <= 92 && Math.abs(item.x - teddyX) < 16) {
+            // Caught!
+            soundFx.playScorePoint();
+            setScore((s) => s + item.pts);
+            setItemsCollected((c) => {
+              const updated = c + 1;
+              if (updated >= stage1Target) {
+                setTimeout(startStage2, 500);
+              }
+              return updated;
+            });
+            setCombo((cb) => {
+              const newCb = cb + 1;
+              if (newCb > 1) {
+                soundFx.playComboStreak(newCb);
+                addScorePopup(`SWEET COMBO x${newCb}!`, teddyX, 75, '#ff3366');
+              } else {
+                addScorePopup(item.label, teddyX, 75, '#f59e0b');
+              }
+              return newCb;
+            });
+            continue;
+          }
+          if (nextY < 100) {
+            nextList.push({ ...item, y: nextY });
+          } else {
+            setCombo(0);
+          }
+        }
+        return nextList;
+      });
+    }, 50);
+  };
+
+  // Keyboard navigation for Stage 1
+  useEffect(() => {
+    if (stage !== 1) return;
+    const handleKey = (e) => {
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+        setTeddyX((x) => Math.max(10, x - 12));
+      } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+        setTeddyX((x) => Math.min(90, x + 12));
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [stage]);
+
+  const handleStage1Touch = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const relX = ((clientX - rect.left) / rect.width) * 100;
+    setTeddyX(Math.max(10, Math.min(90, relX)));
+  };
+
+  // ----------------------------------------------------
+  // STAGE 2: SIBLING MEMORY GARDEN
+  // ----------------------------------------------------
+  const startStage2 = () => {
+    clearInterval(stage1LoopRef.current);
+    clearInterval(stage1SpawnRef.current);
+    setStage(2);
+    setToastMsg('Stage 2: Sibling Memory Match! Tap pairs to reveal cherished memories!');
+    soundFx.playLevelUp();
+
+    // Create 12 cards (6 pairs) shuffled
+    const pairDeck = [];
+    MEMORY_CARDS_DEF.forEach((c) => {
+      pairDeck.push({ ...c, uid: `${c.id}_a` });
+      pairDeck.push({ ...c, uid: `${c.id}_b` });
+    });
+    // Shuffle
+    for (let i = pairDeck.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pairDeck[i], pairDeck[j]] = [pairDeck[j], pairDeck[i]];
+    }
+    setDeck(pairDeck);
+    setFlippedIndices([]);
+    setMatchedIds([]);
+  };
+
+  const handleCardClick = (index) => {
+    if (flippedIndices.length >= 2 || flippedIndices.includes(index)) return;
+    const card = deck[index];
+    if (matchedIds.includes(card.id)) return;
+
+    soundFx.playClick();
+    const newFlipped = [...flippedIndices, index];
+    setFlippedIndices(newFlipped);
+
+    if (newFlipped.length === 2) {
+      const [firstIdx, secondIdx] = newFlipped;
+      const card1 = deck[firstIdx];
+      const card2 = deck[secondIdx];
+
+      if (card1.id === card2.id) {
+        // Matched!
+        soundFx.playMatchSuccess();
+        setScore((s) => s + 120);
+        addScorePopup('PAIR MATCHED! ✨', 50, 45, '#10b981');
+        const nextMatched = [...matchedIds, card1.id];
+        setMatchedIds(nextMatched);
+        setFlippedIndices([]);
+
+        if (nextMatched.length === MEMORY_CARDS_DEF.length) {
+          setTimeout(startStage3, 700);
+        }
+      } else {
+        // Not match
+        setTimeout(() => {
+          setFlippedIndices([]);
+        }, 750);
+      }
+    }
+  };
+
+  // ----------------------------------------------------
+  // STAGE 3: TEDDY BEAR RAKHI MASTER CRAFT
+  // ----------------------------------------------------
+  const startStage3 = () => {
+    setStage(3);
+    setCraftStep(0);
+    setToastMsg('Stage 3: Rakhi Master Craft! Tap to assemble your glowing Sister Rakhi!');
+    soundFx.playLevelUp();
+  };
+
+  const handleCraftStepTap = () => {
+    soundFx.playPowerUp();
+    setScore((s) => s + 150);
+    const nextStep = craftStep + 1;
+    setCraftStep(nextStep);
+
+    addScorePopup(`STEP ${nextStep} CRAFTED! 🧵✨`, 50, 45, '#ff3366');
+
+    if (nextStep >= CRAFT_STEPS.length) {
+      setTimeout(triggerVictory, 800);
+    }
+  };
+
+  // ----------------------------------------------------
+  // STAGE 4: GRAND SIBLING VICTORY
+  // ----------------------------------------------------
+  const triggerVictory = () => {
+    setStage(4);
+    clearInterval(stage1LoopRef.current);
+    clearInterval(stage1SpawnRef.current);
+    soundFx.playGameWin();
+
+    confetti({
+      particleCount: 160,
+      spread: 90,
+      origin: { y: 0.55 },
+      colors: ['#ff3366', '#f59e0b', '#ffd166', '#ff9ebb', '#ffffff']
+    });
+
+    if (onComplete) {
+      onComplete(score + 600);
+    }
   };
 
   return (
     <>
-      <div className="chiti-game-card">
-        <div className="game-intro-view">
-          <div className="game-badge-chip">
-            <Heart size={16} className="text-pink-400" />
-            <span>Interactive Quest</span>
-          </div>
-
-          <h3 className="game-main-title">Chiti's Rakhi Quest ❤️</h3>
-          <p className="game-intro-desc">
-            Recover the sacred Lost Rakhi Heart across 6 fun sibling stages to earn the <strong>Sister of the Millennium Trophy</strong>!
-          </p>
-
-          <button
-            id="btn-start-chiti-quest"
-            type="button"
-            className="btn-game-primary"
-            onClick={startQuest}
-          >
-            <Sparkles size={20} />
-            <span>{score > 0 ? 'Replay Chiti\'s Quest ✨' : 'Play Chiti\'s Quest Now ✨'}</span>
-          </button>
+      {/* Teaser card shown on the stage before launching */}
+      <div className="mini-game-card game-chiti animate-pop">
+        <div className="game-card-badge">
+          <Sparkles size={14} className="text-pink-400" />
+          <span>Siri Chaithra's Level 3 Quest</span>
         </div>
+
+        <div className="game-card-icon-bubble animate-bounce">
+          <span className="game-card-emoji">🧸🍯💖</span>
+        </div>
+
+        <h3 className="game-card-title">Teddy Bear's Honey & Rakhi Sibling Quest! ✨</h3>
+        <p className="game-card-desc">
+          Harvest sweet honey pots & hearts with Teddy, solve the Sibling Memory Garden, and craft the Ultimate Glowing Sister Rakhi!
+        </p>
+
+        <button
+          type="button"
+          id="btn-start-chiti-game"
+          className="btn-launch-game"
+          onClick={startQuest}
+        >
+          <Play size={18} />
+          <span>Launch Teddy Bear Quest 🎮</span>
+        </button>
       </div>
 
-      {/* Full-Screen Immersive Game Modal Overlay */}
-      {level >= 1 &&
+      {/* FULL-SCREEN ARCADE MODAL */}
+      {stage > 0 &&
         createPortal(
-          <div className="modal-backdrop" onClick={exitGame}>
-            <div className="game-modal-card animate-pop" onClick={(e) => e.stopPropagation()}>
-              <button className="btn-modal-x" onClick={exitGame} aria-label="Close quest">
-                <X size={20} />
-              </button>
-
-              {/* HUD Bar (Visible during active gameplay levels 1-6) */}
-              {level >= 1 && level <= 6 && (
-                <div className="game-progress-bar-row">
-                  <span className="stage-indicator">Level {level} of 6: {getLevelTitle(level)}</span>
-                  <div className="game-score-pill">
-                    <Trophy size={14} className="trophy-icon" />
+          <div className="modal-backdrop game-modal-overlay animate-fade-in" style={{ zIndex: 99999 }}>
+            <div className="game-arcade-frame teddy-arcade-theme animate-pop">
+              {/* Header HUD */}
+              <div className="arcade-hud">
+                <div className="hud-left">
+                  <span className="hud-stage-pill">
+                    Stage <strong>{stage}</strong> / 3: {getStageTitle(stage)}
+                  </span>
+                  <div className="hud-score-chip">
+                    <Trophy size={16} className="text-yellow-400" />
                     <span>Score: <strong>{score}</strong></span>
                   </div>
                 </div>
-              )}
 
-              {/* Toast Notification */}
+                <div className="hud-right">
+                  {combo > 1 && (
+                    <div className="hud-combo-chip animate-bounce">
+                      <Flame size={16} className="text-pink-400" />
+                      <span>{combo}x COMBO!</span>
+                    </div>
+                  )}
+                  <button type="button" className="btn-arcade-close" onClick={exitGame} aria-label="Exit Game">
+                    <X size={18} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Toast message banner */}
               {toastMsg && (
-                <div className="reaction-bubble animate-pop">
-                  <Sparkles size={16} className="reaction-sparkle" />
-                  <p>{toastMsg}</p>
+                <div className="arcade-toast-banner animate-pop">
+                  <span>{toastMsg}</span>
+                </div>
+              )}
+
+              {/* Floating score popups */}
+              {scorePopups.map((p) => (
+                <span
+                  key={p.id}
+                  className="floating-score-tag animate-pop"
+                  style={{ left: `${p.x}%`, top: `${p.y}%`, color: p.color }}
+                >
+                  {p.text}
+                </span>
+              ))}
+
+              {/* ----------------------------------------------------
+                  STAGE 1: HONEY & HEART CATCHER
+                 ---------------------------------------------------- */}
+              {stage === 1 && (
+                <div
+                  className="arcade-playfield canopy-playfield"
+                  onMouseMove={handleStage1Touch}
+                  onTouchMove={handleStage1Touch}
+                >
+                  <div className="playfield-sub-header">
+                    <span>Honey & Hearts Harvested: <strong>{itemsCollected}</strong> / {stage1Target}</span>
+                    <div className="progress-bar-track">
+                      <div
+                        className="progress-bar-fill"
+                        style={{ width: `${(itemsCollected / stage1Target) * 100}%`, background: 'linear-gradient(90deg, #ff3366, #f59e0b)' }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Falling Items */}
+                  {fallingItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="falling-item-icon animate-spin-slow"
+                      style={{
+                        left: `${item.x}%`,
+                        top: `${item.y}%`,
+                        position: 'absolute',
+                        fontSize: '32px',
+                        transform: 'translate(-50%, -50%)',
+                        pointerEvents: 'none'
+                      }}
+                    >
+                      {item.icon}
+                    </div>
+                  ))}
+
+                  {/* Player Basket / Cuddly Teddy */}
+                  <div
+                    className="canopy-basket"
+                    style={{
+                      left: `${teddyX}%`,
+                      transform: 'translateX(-50%)',
+                      position: 'absolute',
+                      bottom: '24px'
+                    }}
+                  >
+                    <div className="basket-monkey-sprite animate-bounce">
+                      <span className="basket-emoji">🧸🍯</span>
+                    </div>
+                  </div>
+
+                  {/* Touch Steering Controls for Mobile */}
+                  <div className="touch-steering-row">
+                    <button
+                      type="button"
+                      className="btn-steer"
+                      onClick={() => setTeddyX((x) => Math.max(10, x - 18))}
+                    >
+                      <ArrowLeft size={20} />
+                      <span>Left</span>
+                    </button>
+                    <span className="steer-hint">Drag or use buttons</span>
+                    <button
+                      type="button"
+                      className="btn-steer"
+                      onClick={() => setTeddyX((x) => Math.min(90, x + 18))}
+                    >
+                      <span>Right</span>
+                      <ArrowRight size={20} />
+                    </button>
+                  </div>
                 </div>
               )}
 
               {/* ----------------------------------------------------
-                  LEVEL 1: HEART COLLECTOR
+                  STAGE 2: SIBLING MEMORY GARDEN
                  ---------------------------------------------------- */}
-              {level === 1 && (
-                <div className="l1-collector-stage">
-                  <div className="l1-stats-row">
-                    <div className="hud-pill timer-pill">
-                      <Timer size={14} />
-                      <span>Time: <strong>{l1Time}s</strong></span>
-                    </div>
-                    <div className="hud-pill">
-                      <span>Collected: <strong>{l1Collected}/8 Hearts</strong></span>
+              {stage === 2 && (
+                <div className="arcade-playfield memory-playfield">
+                  <div className="playfield-sub-header">
+                    <span>Pairs Matched: <strong>{matchedIds.length}</strong> / {MEMORY_CARDS_DEF.length}</span>
+                    <div className="progress-bar-track">
+                      <div
+                        className="progress-bar-fill"
+                        style={{ width: `${(matchedIds.length / MEMORY_CARDS_DEF.length) * 100}%`, background: 'linear-gradient(90deg, #ff3366, #ec4899)' }}
+                      />
                     </div>
                   </div>
 
-                  <div className="l1-interactive-field">
-                    {l1Hearts.map((h) => (
-                      <button
-                        key={h.id}
-                        className="l1-floating-heart animate-pop"
-                        style={{ left: `${h.x}%`, top: `${h.y}%` }}
-                        onClick={() => handleL1Tap(h)}
-                      >
-                        {h.isThorn ? '⛈️' : '💖'}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
+                  <div className="memory-card-grid">
+                    {deck.map((card, idx) => {
+                      const isFlipped = flippedIndices.includes(idx) || matchedIds.includes(card.id);
+                      const isMatched = matchedIds.includes(card.id);
 
-              {/* ----------------------------------------------------
-                  LEVEL 2: SIBLING MEMORY ROOM
-                 ---------------------------------------------------- */}
-              {level === 2 && (
-                <div className="l2-memory-stage">
-                  <div className="memory-grid">
-                    {cards.map((card) => {
-                      const isFlipped = flippedCards.some((c) => c.uniqueId === card.uniqueId) || matchedCards.includes(card.id);
                       return (
                         <button
-                          key={card.uniqueId}
-                          className={`memory-card ${isFlipped ? 'is-revealed' : ''}`}
-                          onClick={() => handleCardClick(card)}
+                          key={card.uid}
+                          type="button"
+                          className={`memory-card ${isFlipped ? 'is-flipped' : ''} ${isMatched ? 'is-matched' : ''}`}
+                          onClick={() => handleCardClick(idx)}
                         >
-                          <span className="memory-card-front">{isFlipped ? card.icon : '❓'}</span>
+                          <div className="memory-card-inner">
+                            <div className="memory-card-front">
+                              <span className="card-mystery-icon">🎁</span>
+                            </div>
+                            <div className="memory-card-back">
+                              <span className="card-revealed-icon">{card.icon}</span>
+                              <span className="card-revealed-name">{card.name}</span>
+                            </div>
+                          </div>
                         </button>
                       );
                     })}
@@ -501,198 +457,80 @@ export default function ChitiGame({ recipient, onComplete }) {
               )}
 
               {/* ----------------------------------------------------
-                  LEVEL 3: RAKHI CRAFT CHALLENGE
+                  STAGE 3: RAKHI CRAFT CHALLENGE
                  ---------------------------------------------------- */}
-              {level === 3 && (
-                <div className="l3-craft-stage">
-                  <div className="craft-station-display">
-                    <span className="craft-label">Rakhi Loom Workbench:</span>
-                    <div className="craft-slots-row">
-                      {CRAFT_SEQUENCE.map((key, i) => (
-                        <div key={key} className={`craft-slot ${craftedParts.length > i ? 'is-filled' : ''}`}>
-                          {craftedParts.length > i ? (
-                            <span>
-                              {key === 'silk_thread' && '🧵'}
-                              {key === 'blossom_gem' && '🌸'}
-                              {key === 'golden_bead' && '✨'}
-                              {key === 'sister_charm' && '💖'}
-                              {key === 'ribbon' && '🎀'}
-                            </span>
-                          ) : (
-                            <span className="slot-empty-num">{i + 1}</span>
-                          )}
+              {stage === 3 && (
+                <div className="arcade-playfield craft-playfield">
+                  <div className="craft-showcase-card">
+                    <div className="craft-rakhi-preview animate-bounce">
+                      <span className="preview-emoji">
+                        {craftStep === 0 && '🧵'}
+                        {craftStep === 1 && '💎'}
+                        {craftStep === 2 && '🧸'}
+                        {craftStep >= 3 && '🎀✨'}
+                      </span>
+                    </div>
+
+                    <h3 className="craft-step-title">
+                      {craftStep < CRAFT_STEPS.length ? CRAFT_STEPS[craftStep].title : 'Rakhi Ready! ✨'}
+                    </h3>
+                    <p className="craft-step-desc">
+                      {craftStep < CRAFT_STEPS.length ? CRAFT_STEPS[craftStep].desc : 'Your glowing Sister Rakhi is complete!'}
+                    </p>
+
+                    <div className="craft-step-dots">
+                      {CRAFT_STEPS.map((st, i) => (
+                        <div
+                          key={st.title}
+                          className={`craft-dot ${i < craftStep ? 'is-done' : i === craftStep ? 'is-current' : ''}`}
+                        >
+                          <span>{st.icon}</span>
                         </div>
                       ))}
                     </div>
-                  </div>
 
-                  <div className="craft-parts-palette">
-                    <button className="btn-craft-part" onClick={() => handleCraftPart('blossom_gem')}>
-                      <span>🌸 Blossom Gem</span>
-                    </button>
-                    <button className="btn-craft-part" onClick={() => handleCraftPart('silk_thread')}>
-                      <span>🧵 Silk Thread</span>
-                    </button>
-                    <button className="btn-craft-part" onClick={() => handleCraftPart('ribbon')}>
-                      <span>🎀 Ribbon</span>
-                    </button>
-                    <button className="btn-craft-part" onClick={() => handleCraftPart('sister_charm')}>
-                      <span>💖 Sister Charm</span>
-                    </button>
-                    <button className="btn-craft-part" onClick={() => handleCraftPart('golden_bead')}>
-                      <span>✨ Golden Bead</span>
+                    <button
+                      type="button"
+                      id="btn-craft-action"
+                      className="btn-arcade-action-huge"
+                      onClick={handleCraftStepTap}
+                    >
+                      <Sparkles size={22} />
+                      <span>{craftStep < CRAFT_STEPS.length ? 'Craft Next Component ✨' : 'Complete Rakhi! 🏆'}</span>
                     </button>
                   </div>
                 </div>
               )}
 
               {/* ----------------------------------------------------
-                  LEVEL 4: SIBLING REFLEX CHALLENGE
+                  STAGE 4: VICTORY CEREMONY
                  ---------------------------------------------------- */}
-              {level === 4 && (
-                <div className="l4-reflex-stage animate-pop">
-                  <div className="reflex-timer-bar">
-                    <div className="reflex-timer-fill" style={{ width: `${(reflexTimer / 4) * 100}%` }} />
+              {stage === 4 && (
+                <div className="arcade-playfield victory-playfield animate-pop">
+                  <div className="victory-trophy-bubble animate-bounce">
+                    <Trophy size={64} className="text-yellow-400" />
                   </div>
 
-                  <div className="reflex-scenario-card">
-                    <span className="reflex-scenario-icon">⚡</span>
-                    <h4 className="reflex-scenario-title">{REFLEX_PROMPTS[reflexIndex].situation}</h4>
-                    <span className="reflex-timer-badge">React in: {reflexTimer}s!</span>
-                  </div>
-
-                  <div className="reflex-choices-grid">
-                    <button
-                      className="btn-reflex-action primary"
-                      onClick={() => handleReflexChoice(true)}
-                    >
-                      {REFLEX_PROMPTS[reflexIndex].correctBtn}
-                    </button>
-                    <button
-                      className="btn-reflex-action secondary"
-                      onClick={() => handleReflexChoice(false)}
-                    >
-                      {REFLEX_PROMPTS[reflexIndex].wrongBtn}
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* ----------------------------------------------------
-                  LEVEL 5: HEART RESCUE (STORM MAZE)
-                 ---------------------------------------------------- */}
-              {level === 5 && (
-                <div className="l5-rescue-stage">
-                  <div className="rescue-arena">
-                    {/* The Heart */}
-                    <div className="rescue-heart-player" style={{ left: `${heartPos.x}%`, top: `${heartPos.y}%` }}>
-                      <span>💖</span>
-                    </div>
-
-                    {/* Storm Clouds */}
-                    {clouds.map((c) => (
-                      <div key={c.id} className="rescue-cloud" style={{ left: `${c.x}%`, top: `${c.y}%` }}>
-                        <span>⛈️</span>
-                      </div>
-                    ))}
-
-                    {/* Golden Altar Goal */}
-                    <div className="rescue-altar-goal">
-                      <span>🏛️✨</span>
-                      <span className="altar-label">Altar</span>
-                    </div>
-                  </div>
-
-                  {/* Touch D-Pad */}
-                  <div className="maze-dpad-controls">
-                    <button className="dpad-btn" onClick={() => moveHeart(0, -12)}>⬆️</button>
-                    <div className="dpad-mid-row">
-                      <button className="dpad-btn" onClick={() => moveHeart(-12, 0)}>⬅️</button>
-                      <div className="dpad-center-hub">💖</div>
-                      <button className="dpad-btn" onClick={() => moveHeart(12, 0)}>➡️</button>
-                    </div>
-                    <button className="dpad-btn" onClick={() => moveHeart(0, 12)}>⬇️</button>
-                  </div>
-                </div>
-              )}
-
-              {/* ----------------------------------------------------
-                  LEVEL 6: SACRED RAKHI OATH RITUAL
-                 ---------------------------------------------------- */}
-              {level === 6 && (
-                <div className="l6-oath-stage animate-pop">
-                  <h4 className="oath-title">The Sacred Rakhi Blessing Altar 🪔</h4>
-                  <p className="oath-subtitle">Tap each sacred element in order to complete the ceremony!</p>
-
-                  <div className="oath-altar-grid">
-                    <button
-                      className={`oath-ritual-card ${oathStepsCompleted.diya ? 'is-complete' : ''}`}
-                      onClick={() => handleOathStep('diya')}
-                    >
-                      <span className="oath-emoji">🪔</span>
-                      <span className="oath-text">Light Sacred Diya</span>
-                      {oathStepsCompleted.diya && <CheckCircle2 size={16} className="text-green-400" />}
-                    </button>
-
-                    <button
-                      className={`oath-ritual-card ${oathStepsCompleted.tilak ? 'is-complete' : ''}`}
-                      onClick={() => handleOathStep('tilak')}
-                      disabled={!oathStepsCompleted.diya}
-                    >
-                      <span className="oath-emoji">✨</span>
-                      <span className="oath-text">Apply Roli Tilak</span>
-                      {oathStepsCompleted.tilak && <CheckCircle2 size={16} className="text-green-400" />}
-                    </button>
-
-                    <button
-                      className={`oath-ritual-card ${oathStepsCompleted.knot ? 'is-complete' : ''}`}
-                      onClick={() => handleOathStep('knot')}
-                      disabled={!oathStepsCompleted.tilak}
-                    >
-                      <span className="oath-emoji">🎀</span>
-                      <span className="oath-text">Tie Golden Knot</span>
-                      {oathStepsCompleted.knot && <CheckCircle2 size={16} className="text-green-400" />}
-                    </button>
-
-                    <button
-                      className={`oath-ritual-card ${oathStepsCompleted.sweet ? 'is-complete' : ''}`}
-                      onClick={() => handleOathStep('sweet')}
-                      disabled={!oathStepsCompleted.knot}
-                    >
-                      <span className="oath-emoji">🍬</span>
-                      <span className="oath-text">Offer Sweet Treat</span>
-                      {oathStepsCompleted.sweet && <CheckCircle2 size={16} className="text-green-400" />}
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* ----------------------------------------------------
-                  LEVEL 7: GRAND VICTORY & TROPHY
-                 ---------------------------------------------------- */}
-              {level === 7 && (
-                <div className="game-completed-view animate-pop">
-                  <div className="trophy-stage">
-                    <Trophy size={68} className="trophy-gold animate-bounce" />
-                    <div className="trophy-aura" />
-                  </div>
-
-                  <h3 className="completed-title">CHITI — RAKHI QUEST COMPLETE! 💖🏆</h3>
-                  <p className="completed-subtitle">
-                    All 6 realms conquered with a stellar score of <strong>{score} pts</strong>! Certified <strong>Sister of the Millennium</strong>!
+                  <h2 className="victory-main-title">TEDDY SIBLING QUEST COMPLETE! 🧸💖🏆</h2>
+                  <p className="victory-subtitle">
+                    Siri Chaithra gathered all the honey memories and crafted the supreme Rakhi with <strong>{score} pts</strong>!
                   </p>
 
-                  <div className="unlock-banner">
-                    <CheckCircle2 size={22} className="unlock-icon" />
+                  <div className="victory-reward-card">
+                    <CheckCircle2 size={24} className="text-green-400" />
                     <div>
                       <strong>The Secret Rakhi Seal is Ready to Break!</strong>
-                      <p>Proceed below to unseal your handwritten letter and unwrap the Rakhi 2026 gift box ✨</p>
+                      <p>Proceed to Level 4 to read your handwritten brother letter ✨</p>
                     </div>
                   </div>
 
-                  <button className="btn-game-secondary" onClick={exitGame}>
-                    <CheckCircle2 size={16} />
-                    <span>Done & Continue ✨</span>
+                  <button
+                    type="button"
+                    className="btn-arcade-action-huge"
+                    onClick={exitGame}
+                  >
+                    <Sparkles size={20} />
+                    <span>Proceed to Secret Letter 💌</span>
                   </button>
                 </div>
               )}
@@ -704,14 +542,12 @@ export default function ChitiGame({ recipient, onComplete }) {
   );
 }
 
-function getLevelTitle(lvl) {
-  switch (lvl) {
-    case 1: return 'Heart Collector 💖';
-    case 2: return 'Sibling Memory Room 🧠';
-    case 3: return 'Rakhi Craft Challenge 🧵';
-    case 4: return 'Sibling Reflex Showdown ⚡';
-    case 5: return 'Heart Rescue Maze 🛡️';
-    case 6: return 'Sacred Oath Ritual 🪔';
+function getStageTitle(st) {
+  switch (st) {
+    case 1: return 'Honey & Hearts Harvest 🍯';
+    case 2: return 'Memory Garden 🧠';
+    case 3: return 'Rakhi Master Craft 🧵';
+    case 4: return 'Sibling Victory 🏆';
     default: return '';
   }
 }

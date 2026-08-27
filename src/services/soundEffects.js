@@ -1,7 +1,7 @@
 /**
  * Procedural Web Audio Sound Engine for Rakhi 2026.
  * Zero external audio files required. Produces rich, cute, high-quality audio
- * synthesized directly in the browser for UI, Mascots, and all 4 Mini-Games.
+ * synthesized directly in the browser for UI, Mascots, and all 5 Mini-Games.
  */
 
 class SoundEngine {
@@ -83,6 +83,10 @@ class SoundEngine {
     osc.stop(now + 0.22);
   }
 
+  playNegative() {
+    this.playError();
+  }
+
   // Portal Unlock Fanfare
   playUnlock() {
     if (this.muted) return;
@@ -148,12 +152,12 @@ class SoundEngine {
     if (!this.ctx) return;
 
     const chords = [
-      { f: 523.25, t: 0 },    // C5
-      { f: 659.25, t: 0.1 },  // E5
-      { f: 783.99, t: 0.2 },  // G5
+      { f: 523.25, t: 0 },     // C5
+      { f: 659.25, t: 0.1 },   // E5
+      { f: 783.99, t: 0.2 },   // G5
       { f: 1046.50, t: 0.35 }, // C6
-      { f: 1318.51, t: 0.5 }, // E6
-      { f: 1567.98, t: 0.65 } // G6
+      { f: 1318.51, t: 0.5 },  // E6
+      { f: 1567.98, t: 0.65 }  // G6
     ];
     const now = this.ctx.currentTime;
 
@@ -199,6 +203,31 @@ class SoundEngine {
 
     osc.start(now);
     osc.stop(now + 0.15);
+  }
+
+  // Combo Streak chime
+  playComboStreak(streak = 1) {
+    if (this.muted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const baseFreq = Math.min(523.25 + streak * 65, 1500);
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(baseFreq, now);
+    osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.5, now + 0.12);
+
+    gain.gain.setValueAtTime(0.18, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.2);
   }
 
   // Jump boing
@@ -250,6 +279,37 @@ class SoundEngine {
     osc.stop(now + 0.35);
   }
 
+  // Boss alert
+  playBossAlert() {
+    if (this.muted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+    [220, 196, 220, 261.63].forEach((f, i) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const t = now + i * 0.12;
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(f, t);
+
+      gain.gain.setValueAtTime(0.18, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(t);
+      osc.stop(t + 0.2);
+    });
+  }
+
+  // Fever Mode
+  playFeverMode() {
+    this.playPowerUp();
+  }
+
   // Boss hit impact
   playBossHit() {
     if (this.muted) return;
@@ -261,7 +321,7 @@ class SoundEngine {
     const gain = this.ctx.createGain();
 
     osc.type = 'square';
-    osc.frequency.setValueAtTime(120, now);
+    osc.frequency.setValueAtTime(140, now);
     osc.frequency.linearRampToValueAtTime(60, now + 0.15);
 
     gain.gain.setValueAtTime(0.2, now);
@@ -323,30 +383,6 @@ class SoundEngine {
     osc.stop(now + 0.22);
   }
 
-  // Feather / Crystal collect chime
-  playCrystalChime() {
-    if (this.muted) return;
-    this.init();
-    if (!this.ctx) return;
-
-    const now = this.ctx.currentTime;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(1174.66, now); // D6
-    osc.frequency.exponentialRampToValueAtTime(1760.00, now + 0.08); // A6
-
-    gain.gain.setValueAtTime(0.18, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-
-    osc.start(now);
-    osc.stop(now + 0.35);
-  }
-
   // Wax Seal Breaking sound
   playSealBreak() {
     if (this.muted) return;
@@ -401,7 +437,7 @@ class SoundEngine {
     });
   }
 
-  // Mascot Sounds
+  // Mascot Tap Sounds
   playMascot(recipientId) {
     if (this.muted) return;
     this.init();
@@ -411,29 +447,41 @@ class SoundEngine {
 
     switch (recipientId) {
       case 'chiti': {
-        const arpeggio = [587.33, 739.99, 880.00, 1174.66, 1479.98];
-        arpeggio.forEach((freq, i) => {
+        // 🧸 Cuddly Teddy Squeak & Hug Sparkle
+        const squeakOsc = this.ctx.createOscillator();
+        const squeakGain = this.ctx.createGain();
+        squeakOsc.type = 'sine';
+        squeakOsc.frequency.setValueAtTime(550, now);
+        squeakOsc.frequency.exponentialRampToValueAtTime(950, now + 0.1);
+        squeakOsc.frequency.exponentialRampToValueAtTime(700, now + 0.25);
+
+        squeakGain.gain.setValueAtTime(0.16, now);
+        squeakGain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+
+        squeakOsc.connect(squeakGain);
+        squeakGain.connect(this.ctx.destination);
+        squeakOsc.start(now);
+        squeakOsc.stop(now + 0.28);
+
+        // Chime trailing
+        [880, 1174.66, 1479.98].forEach((freq, i) => {
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
-          const t = now + i * 0.06;
-
-          osc.type = 'sine';
+          const t = now + 0.12 + i * 0.06;
+          osc.type = 'triangle';
           osc.frequency.setValueAtTime(freq, t);
-
-          gain.gain.setValueAtTime(0, t);
-          gain.gain.linearRampToValueAtTime(0.14, t + 0.01);
-          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
-
+          gain.gain.setValueAtTime(0.12, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
           osc.connect(gain);
           gain.connect(this.ctx.destination);
-
           osc.start(t);
-          osc.stop(t + 0.5);
+          osc.stop(t + 0.35);
         });
         break;
       }
 
       case 'duck': {
+        // 🦆 Duck: Quack
         const quackOsc = this.ctx.createOscillator();
         const quackGain = this.ctx.createGain();
         const filter = this.ctx.createBiquadFilter();
@@ -459,6 +507,7 @@ class SoundEngine {
       }
 
       case 'cat': {
+        // 🐱 Cat: Meow
         const meowOsc = this.ctx.createOscillator();
         const meowGain = this.ctx.createGain();
 
@@ -480,25 +529,49 @@ class SoundEngine {
       }
 
       case 'peacock': {
-        const etherealNotes = [659.25, 880.00, 1046.50, 1318.51, 1567.98, 2093.00];
-        etherealNotes.forEach((freq, idx) => {
+        // 🦚 White Peacock: Ethereal Royal Harp & Crystal Bell Chime
+        const harpNotes = [
+          { f: 659.25, t: 0, d: 0.18 }, // E5
+          { f: 880.00, t: 0.08, d: 0.20 }, // A5
+          { f: 1046.50, t: 0.16, d: 0.22 }, // C6
+          { f: 1318.51, t: 0.24, d: 0.28 }, // E6
+          { f: 1760.00, t: 0.32, d: 0.35 }  // A6
+        ];
+        harpNotes.forEach((note) => {
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
-          const t = now + idx * 0.07;
+          const t = now + note.t;
 
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(freq, t);
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(note.f, t);
 
           gain.gain.setValueAtTime(0, t);
-          gain.gain.linearRampToValueAtTime(0.12, t + 0.02);
-          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+          gain.gain.linearRampToValueAtTime(0.18, t + 0.015);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + note.d * 1.8);
 
           osc.connect(gain);
           gain.connect(this.ctx.destination);
-
           osc.start(t);
-          osc.stop(t + 0.6);
+          osc.stop(t + note.d * 1.8);
         });
+        break;
+      }
+
+      case 'hanvika': {
+        // 🐰 Bunny Meadow Hop
+        const boingOsc = this.ctx.createOscillator();
+        const boingGain = this.ctx.createGain();
+        boingOsc.type = 'sine';
+        boingOsc.frequency.setValueAtTime(320, now);
+        boingOsc.frequency.exponentialRampToValueAtTime(780, now + 0.16);
+
+        boingGain.gain.setValueAtTime(0.18, now);
+        boingGain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+
+        boingOsc.connect(boingGain);
+        boingGain.connect(this.ctx.destination);
+        boingOsc.start(now);
+        boingOsc.stop(now + 0.2);
         break;
       }
 
@@ -517,8 +590,8 @@ class SoundEngine {
 
     switch (recipientId) {
       case 'cat': {
-        // 🐱 Cat: Playful bouncing melody + cute meow pitch bends + soft purr trill
-        const bassNotes = [261.63, 329.63, 392.00, 523.25, 392.00, 329.63]; // C4, E4, G4, C5, G4, E4
+        // 🐱 Cat: Playful bouncing melody + cute meow pitch bends
+        const bassNotes = [261.63, 329.63, 392.00, 523.25, 392.00, 329.63];
         bassNotes.forEach((freq, idx) => {
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
@@ -536,7 +609,7 @@ class SoundEngine {
           osc.stop(t + 0.22);
         });
 
-        // Playful meow accent
+        // Meow accent
         const meowOsc = this.ctx.createOscillator();
         const meowGain = this.ctx.createGain();
         const meowTime = now + 0.88;
@@ -553,26 +626,11 @@ class SoundEngine {
         meowGain.connect(this.ctx.destination);
         meowOsc.start(meowTime);
         meowOsc.stop(meowTime + 0.42);
-
-        // Sparkle hop finish
-        [783.99, 1046.50, 1318.51, 1567.98].forEach((f, i) => {
-          const sOsc = this.ctx.createOscillator();
-          const sGain = this.ctx.createGain();
-          const st = now + 1.32 + i * 0.08;
-          sOsc.type = 'sine';
-          sOsc.frequency.setValueAtTime(f, st);
-          sGain.gain.setValueAtTime(0.14, st);
-          sGain.gain.exponentialRampToValueAtTime(0.001, st + 0.25);
-          sOsc.connect(sGain);
-          sGain.connect(this.ctx.destination);
-          sOsc.start(st);
-          sOsc.stop(st + 0.25);
-        });
         break;
       }
 
       case 'duck': {
-        // 🦆 Duck: Funny rhythmic quack sequence + bubbly splash notes
+        // 🦆 Duck: Funny rhythmic quacks & splashes
         const quackSteps = [
           { t: 0.0, freq: 380, end: 270 },
           { t: 0.22, freq: 440, end: 310 },
@@ -606,74 +664,61 @@ class SoundEngine {
           qOsc.start(t);
           qOsc.stop(t + 0.18);
         });
-
-        // Water droplet splash finish
-        [659.25, 880, 1174.66, 1479.98].forEach((f, i) => {
-          const dropOsc = this.ctx.createOscillator();
-          const dropGain = this.ctx.createGain();
-          const dt = now + 1.15 + i * 0.07;
-
-          dropOsc.type = 'sine';
-          dropOsc.frequency.setValueAtTime(f * 0.7, dt);
-          dropOsc.frequency.exponentialRampToValueAtTime(f * 1.5, dt + 0.05);
-
-          dropGain.gain.setValueAtTime(0.18, dt);
-          dropGain.gain.exponentialRampToValueAtTime(0.001, dt + 0.2);
-
-          dropOsc.connect(dropGain);
-          dropGain.connect(this.ctx.destination);
-          dropOsc.start(dt);
-          dropOsc.stop(dt + 0.2);
-        });
         break;
       }
 
       case 'peacock': {
-        // 🦚 Peacock: Royal harp/crystal glissando + celestial chimes
-        const harpChords = [
-          587.33, 739.99, 880.00, 1174.66, // D5, F#5, A5, D6
-          1479.98, 1760.00, 2093.00, 2349.32, 2959.96 // F#6, A6, C7, D7, F#7
+        // 🦚 White Peacock: Majestic Radiant Fanfare & Crystal Bells Melody
+        const peacockMelody = [
+          { f: 523.25, t: 0, d: 0.15 },    // C5
+          { f: 659.25, t: 0.14, d: 0.15 }, // E5
+          { f: 783.99, t: 0.28, d: 0.15 }, // G5
+          { f: 1046.50, t: 0.42, d: 0.2 }, // C6
+          { f: 1174.66, t: 0.58, d: 0.2 }, // D6
+          { f: 1318.51, t: 0.74, d: 0.35 },// E6
+          { f: 1567.98, t: 0.92, d: 0.45 } // G6
         ];
 
-        harpChords.forEach((freq, idx) => {
+        peacockMelody.forEach((item) => {
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
-          const t = now + idx * 0.12;
+          const t = now + item.t;
 
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(freq, t);
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(item.f, t);
 
           gain.gain.setValueAtTime(0, t);
-          gain.gain.linearRampToValueAtTime(0.16, t + 0.02);
-          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.85);
+          gain.gain.linearRampToValueAtTime(0.18, t + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + item.d * 2.2);
 
           osc.connect(gain);
           gain.connect(this.ctx.destination);
-
           osc.start(t);
-          osc.stop(t + 0.85);
+          osc.stop(t + item.d * 2.2);
         });
 
-        // Shimmering overtone chime
-        const chimeOsc = this.ctx.createOscillator();
-        const chimeGain = this.ctx.createGain();
-        const ct = now + 1.2;
-        chimeOsc.type = 'sine';
-        chimeOsc.frequency.setValueAtTime(1760.00, ct);
-        chimeOsc.frequency.exponentialRampToValueAtTime(3520.00, ct + 0.6);
+        // Sparkle shimmer overtone chimes
+        [1760.00, 2093.00, 2637.00].forEach((f, idx) => {
+          const cOsc = this.ctx.createOscillator();
+          const cGain = this.ctx.createGain();
+          const ct = now + 0.95 + idx * 0.09;
 
-        chimeGain.gain.setValueAtTime(0.15, ct);
-        chimeGain.gain.exponentialRampToValueAtTime(0.001, ct + 0.8);
+          cOsc.type = 'triangle';
+          cOsc.frequency.setValueAtTime(f, ct);
 
-        chimeOsc.connect(chimeGain);
-        chimeGain.connect(this.ctx.destination);
-        chimeOsc.start(ct);
-        chimeOsc.stop(ct + 0.8);
+          cGain.gain.setValueAtTime(0.12, ct);
+          cGain.gain.exponentialRampToValueAtTime(0.001, ct + 0.35);
+
+          cOsc.connect(cGain);
+          cGain.connect(this.ctx.destination);
+          cOsc.start(ct);
+          cOsc.stop(ct + 0.35);
+        });
         break;
       }
 
       case 'chiti': {
-        // ❤️ Chiti: Warm joyful marimba & bell glockenspiel celebration
+        // 🧸 Teddy Bear & Chiti: Warm joyful cuddle melody + soft glockenspiel
         const celebrationMelody = [
           { f: 523.25, d: 0.12 }, // C5
           { f: 659.25, d: 0.12 }, // E5
@@ -724,15 +769,15 @@ class SoundEngine {
       }
 
       case 'hanvika': {
-        // 🐰 Hanvika: Bouncy meadow hop xylophone arpeggios + cartoon boing + carrot sparkle
+        // 🐰 Hanvika: Meadow hop xylophone
         const hopMelody = [
-          { f: 587.33, d: 0.10 }, // D5
-          { f: 739.99, d: 0.10 }, // F#5
-          { f: 880.00, d: 0.10 }, // A5
-          { f: 1174.66, d: 0.18 }, // D6
-          { f: 987.77, d: 0.10 },  // B5
-          { f: 1174.66, d: 0.12 }, // D6
-          { f: 1479.98, d: 0.30 }  // F#6
+          { f: 587.33, d: 0.10 },
+          { f: 739.99, d: 0.10 },
+          { f: 880.00, d: 0.10 },
+          { f: 1174.66, d: 0.18 },
+          { f: 987.77, d: 0.10 },
+          { f: 1174.66, d: 0.12 },
+          { f: 1479.98, d: 0.30 }
         ];
 
         let elapsed = 0;
@@ -756,20 +801,6 @@ class SoundEngine {
 
           elapsed += note.d;
         });
-
-        // Bunny Hop Boing
-        const boingOsc = this.ctx.createOscillator();
-        const boingGain = this.ctx.createGain();
-        const bt = now + elapsed;
-        boingOsc.type = 'sine';
-        boingOsc.frequency.setValueAtTime(320, bt);
-        boingOsc.frequency.exponentialRampToValueAtTime(880, bt + 0.22);
-        boingGain.gain.setValueAtTime(0.18, bt);
-        boingGain.gain.exponentialRampToValueAtTime(0.001, bt + 0.25);
-        boingOsc.connect(boingGain);
-        boingGain.connect(this.ctx.destination);
-        boingOsc.start(bt);
-        boingOsc.stop(bt + 0.25);
         break;
       }
 
@@ -778,7 +809,6 @@ class SoundEngine {
     }
   }
 
-  // Legacy fallback alias
   playDjDrop(recipientId) {
     this.playCharacterDanceRhythm(recipientId);
   }

@@ -42,7 +42,7 @@ export default function InteractiveWidget({ recipient, onComplete, isCompleted }
 
   const getRandomSymbol = (id) => {
     if (id === 'chiti') {
-      const symbols = ['💖', '🌸', '✨', '🎀', '🌟', '🍫', '💕'];
+      const symbols = ['🧸', '💖', '🍯', '🎀', '🌸', '✨', '🍫', '💕'];
       return symbols[Math.floor(Math.random() * symbols.length)];
     }
     if (id === 'duck') {
@@ -54,7 +54,11 @@ export default function InteractiveWidget({ recipient, onComplete, isCompleted }
       return symbols[Math.floor(Math.random() * symbols.length)];
     }
     if (id === 'peacock') {
-      const symbols = ['🪶', '🦚', '💎', '✨', '👑', '🌟', '💫'];
+      const symbols = ['🦚', '🪶', '💎', '✨', '👑', '🌟', '🪞', '💫'];
+      return symbols[Math.floor(Math.random() * symbols.length)];
+    }
+    if (id === 'hanvika') {
+      const symbols = ['🥕', '🐰', '🌸', '🍀', '✨', '🎀', '⭐'];
       return symbols[Math.floor(Math.random() * symbols.length)];
     }
     return '✨';
@@ -69,7 +73,7 @@ export default function InteractiveWidget({ recipient, onComplete, isCompleted }
       case 'cat':
         return <PawPrint className="widget-icon" />;
       case 'peacock':
-        return <Crown className="widget-icon" />;
+        return <Sparkles className="widget-icon" />;
       default:
         return <Sparkles className="widget-icon" />;
     }

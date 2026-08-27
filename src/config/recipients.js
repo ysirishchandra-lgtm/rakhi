@@ -8,79 +8,79 @@ export const RECIPIENTS = {
   chiti: {
     id: 'chiti',
     name: 'Siri Chaithra',
-    nickname: 'Chiti',
+    nickname: 'Teddy Bear',
     relation: 'My Wonderful Sister ❤️',
-    roleTag: 'The Heart & Soul Sister',
-    emoji: '❤️',
-    mascotEmoji: '🌸',
-    password: 'brother',
-    hint: 'Who is the one wishing his favorite sister a Happy Raksha Bandhan 2026? ❤️',
-    welcomeQuote: '"A sister is both your mirror and your biggest cheerleader. Happy Raksha Bandhan 2026! 💖"',
+    roleTag: 'The Cuddly Heart & Soul Sister 🧸',
+    emoji: '🧸',
+    mascotEmoji: '🧸',
+    password: 'teddy',
+    hint: 'Who is the sweetest sister, cuddly like a warm teddy bear? 🧸❤️ (Try "teddy" or "brother"!)',
+    welcomeQuote: '"A sister\'s warm hug is like a gentle teddy bear that protects your heart forever. Happy Raksha Bandhan 2026! 🧸💖"',
     theme: {
       key: 'chiti-warmth',
       primary: '#ff3366',
       primaryRgb: '255, 51, 102',
-      secondary: '#ff758c',
-      secondaryRgb: '255, 117, 140',
+      secondary: '#d97706',
+      secondaryRgb: '217, 119, 6',
       accent: '#ffd166',
       accentRgb: '255, 209, 102',
-      bgDark: '#12050c',
-      bgGradient: 'radial-gradient(ellipse at top, #3d0c24 0%, #1a0410 50%, #0d0108 100%)',
-      cardBg: 'rgba(45, 12, 28, 0.65)',
-      cardBorder: 'rgba(255, 117, 140, 0.35)',
-      glowColor: 'rgba(255, 51, 102, 0.5)',
+      bgDark: '#160710',
+      bgGradient: 'radial-gradient(ellipse at top, #3d0c24 0%, #200715 50%, #0d0108 100%)',
+      cardBg: 'rgba(50, 15, 32, 0.7)',
+      cardBorder: 'rgba(255, 117, 140, 0.4)',
+      glowColor: 'rgba(255, 51, 102, 0.55)',
       textPrimary: '#fff0f5',
       textSecondary: '#fbcfe8',
       fontHeading: "'Outfit', sans-serif",
       fontAccent: "'Caveat', cursive",
-      badgeGradient: 'linear-gradient(135deg, #ff3366, #ff758c)',
-      highlightTag: 'Sibling Special ✨'
+      badgeGradient: 'linear-gradient(135deg, #ff3366, #f59e0b)',
+      highlightTag: 'Teddy Sister Special 🧸✨'
     },
     particles: {
       type: 'chiti',
       shapes: ['heart', 'flower', 'sparkle', 'star'],
-      colors: ['#ff3366', '#ff758c', '#ffd166', '#ff9ebb', '#ffffff'],
-      density: 35,
-      speed: 0.8
+      colors: ['#ff3366', '#f59e0b', '#ffd166', '#ff9ebb', '#ffffff'],
+      density: 38,
+      speed: 0.85
     },
     audioProfile: {
       theme: 'chiti',
       mascotSound: 'harpSparkle',
       clickSound: 'softPop',
-      soundTitle: 'Magical Sister Chimes 🌸'
+      soundTitle: 'Cuddly Teddy Chimes & Sibling Sparkles 🧸💖'
     },
     hero: {
-      title: 'Welcome to Chiti\'s Warm Sanctuary 💖',
-      subtitle: 'A golden corner filled with hearts, sibling memories, and unlimited love.',
-      mascotName: 'Sister Chiti 💖',
-      mascotActionText: 'Tap Chiti to start the celebration dance! 🌸💃'
+      title: 'Welcome to Siri Chaithra\'s Cuddly Teddy Realm 🧸💖',
+      subtitle: 'A warm golden sanctuary filled with teddy hugs, sibling memories, and sweet surprises.',
+      mascotName: 'Cuddly Teddy Bear 🧸',
+      mascotActionText: 'Tap Teddy Bear to watch the adorable teddy waddle & hug dance! 🧸💃'
     },
     interactiveWidget: {
       type: 'sisterLove',
-      title: 'Sister Love & Sparkle Jar 💌',
-      prompt: 'Tap to shower the screen with sibling affection!',
-      actionLabel: 'Send Love Shower 💖',
-      statLabel: 'Love Sparks Sent:',
+      title: 'Teddy Hugs & Sister Sparkle Jar 🧸🍯💌',
+      prompt: 'Tap to send warm teddy hugs and shower the screen with sibling affection!',
+      actionLabel: 'Send Warm Teddy Hug! 🧸💖',
+      statLabel: 'Teddy Hugs Sent:',
       quotes: [
-        '“Forever my built-in best friend!” 👭',
-        '“Rakhi promise: Always having your back!” 🛡️',
-        '“Thank you for being the sweetest sister ever!” 🌟',
-        '“No one makes me laugh quite like you do!” 😂',
-        '“May this Rakhi bring you endless happiness!” 🎀'
+        '“Forever my built-in best friend & favorite teddy hugger!” 👭🧸',
+        '“Rakhi promise: Always having your back through thick and thin!” 🛡️',
+        '“Thank you for being the sweetest, most caring sister ever!” 🌟',
+        '“No one brings warmth and laughter to our home quite like you!” 🍯',
+        '“May this Rakhi bring you endless joy, sweet treats, and blessings!” 🎀'
       ]
     },
     letterPreview: {
-      title: 'A Heartfelt Letter for Siri Chaithra (Chiti) 📜',
+      title: 'A Heartfelt Letter for Siri Chaithra (Teddy Bear) 📜',
       tag: 'From Your Brother',
-      teaserText: 'Dear Chiti, growing up together has given me the best memories and a bond that only gets stronger with every Rakhi. Even when we bicker over the silliest things or fight for the remote, you are always the heart of our home. On this Rakhi 2026, I promise to always stand by you, celebrate your victories, and cheer you up whenever you need a laugh. Happy Raksha Bandhan!',
-      signature: 'With infinite love & blessings, Your Brother ✨'
+      teaserText: 'Dear Siri Chaithra (my lovely sister & cuddly teddy bear), growing up together has given me the best memories and a bond that only gets stronger with every Rakhi. Even when we bicker over the silliest things or fight for the remote, you are always the warmth and heart of our home. On this Rakhi 2026, I promise to always stand by you, celebrate your victories, and protect your happiness forever. Happy Raksha Bandhan!',
+      signature: 'With infinite love & blessings, Your Brother ✨🧸'
     },
     giftTeaser: {
-      title: 'Chiti\'s Secret Rakhi 2026 Gift Box 🎁',
+      title: 'Siri Chaithra\'s Secret Rakhi 2026 Gift Box 🎁',
       badge: 'Rakhi Special',
-      description: 'A special surprise packaged with golden ribbons and sister memories. Complete the Brother\'s Challenge above to unwrap!',
-      mysteryClue: 'Clue: A sparkling token of brotherly love, sweet treats, and memories made just for Chiti 🌸',
-      revealMessage: 'Happy Rakhi 2026, Chiti! 🎀 You are the most wonderful sister in the universe. May all your dreams sparkle and come true this year!'
+      description: 'A special surprise packaged with golden ribbons, warm teddy charms, and sister memories. Complete the Teddy Bear Quest to unwrap!',
+      mysteryClue: 'Clue: A sparkling token of brotherly love, sweet honey treats, and cozy memories made just for Siri Chaithra 🧸🌸',
+      revealMessage: 'Happy Rakhi 2026, Siri Chaithra! 🎀🧸 You are the most wonderful sister in the universe. May all your dreams sparkle and come true this year!'
     }
   },
 
@@ -247,77 +247,77 @@ export const RECIPIENTS = {
     name: 'Thanishqa',
     nickname: 'White Peacock',
     relation: 'College Bestie 🦚',
-    roleTag: 'Empress of Grace & Elegance',
+    roleTag: 'The Majestic White Peacock 🦚✨',
     emoji: '🦚',
     mascotEmoji: '🪶',
-    password: 'peaky',
-    hint: 'A majestic nickname celebrating our graceful white peacock! 🦚',
-    welcomeQuote: '"Grace is not standing out, but being remembered for pure radiance. Happy Rakhi 2026! ✨👑"',
+    password: 'peacock',
+    hint: 'Think of our graceful, radiant white peacock! 🦚✨ (Try "peacock"!)',
+    welcomeQuote: '"Spread your radiant wings of grace, shine bright with joy, and cherish every precious moment. Happy Raksha Bandhan 2026! 🦚✨"',
     theme: {
-      key: 'peacock-royal',
-      primary: '#10b981',
-      primaryRgb: '16, 185, 129',
-      secondary: '#0284c7',
-      secondaryRgb: '2, 132, 199',
-      accent: '#e0e7ff',
-      accentRgb: '224, 231, 255',
-      bgDark: '#031718',
-      bgGradient: 'radial-gradient(ellipse at top, #064e3b 0%, #032a2f 50%, #021215 100%)',
-      cardBg: 'rgba(6, 78, 59, 0.65)',
-      cardBorder: 'rgba(16, 185, 129, 0.35)',
-      glowColor: 'rgba(16, 185, 129, 0.5)',
-      textPrimary: '#f0fdf4',
-      textSecondary: '#a7f3d0',
-      fontHeading: "'Cinzel', serif",
-      fontAccent: "'Outfit', sans-serif",
-      badgeGradient: 'linear-gradient(135deg, #10b981, #0284c7, #e0e7ff)',
-      highlightTag: 'Royal Sanctuary 🦚'
+      key: 'peacock-sanctuary',
+      primary: '#38bdf8',
+      primaryRgb: '56, 189, 248',
+      secondary: '#10b981',
+      secondaryRgb: '16, 185, 129',
+      accent: '#fde047',
+      accentRgb: '253, 224, 71',
+      bgDark: '#031422',
+      bgGradient: 'radial-gradient(ellipse at top, #0c4a6e 0%, #082f49 50%, #031422 100%)',
+      cardBg: 'rgba(8, 38, 59, 0.75)',
+      cardBorder: 'rgba(56, 189, 248, 0.35)',
+      glowColor: 'rgba(56, 189, 248, 0.55)',
+      textPrimary: '#f0f9ff',
+      textSecondary: '#bae6fd',
+      fontHeading: "'Fredoka', sans-serif",
+      fontAccent: "'Caveat', cursive",
+      badgeGradient: 'linear-gradient(135deg, #0284c7, #10b981)',
+      highlightTag: 'White Peacock Sanctuary 🦚✨'
     },
     particles: {
       type: 'peacock',
-      shapes: ['feather', 'crystal', 'starburst', 'auraRing'],
-      colors: ['#ffffff', '#10b981', '#38bdf8', '#a7f3d0', '#e0e7ff'],
-      density: 32,
-      speed: 0.7
+      shapes: ['feather', 'crystal', 'starburst', 'auraRing', 'sparkle'],
+      colors: ['#ffffff', '#bae6fd', '#38bdf8', '#67e8f9', '#a7f3d0', '#fde047'],
+      density: 36,
+      speed: 0.95
     },
     audioProfile: {
       theme: 'peacock',
-      mascotSound: 'celestialFanfare',
-      clickSound: 'crystalTink',
-      soundTitle: 'Royal Crystal Harmonies 🪶'
+      mascotSound: 'peacockFanfare',
+      clickSound: 'crystalChime',
+      soundTitle: 'Ethereal White Peacock Harp & Crystal Bells 🦚✨'
     },
     hero: {
-      title: 'Welcome to the White Peacock Sanctuary 🦚✨',
-      subtitle: 'An iridescent court of elegance, crystalline stars, and royal majesty.',
-      mascotName: 'The Royal White Peacock 🦚',
-      mascotActionText: 'Tap the peacock to unfurl the majestic fan dance! ✨💃'
+      title: 'Welcome to Thanishqa\'s White Peacock Sanctuary 🦚✨',
+      subtitle: 'A radiant, celestial sanctuary of glowing white plumage, iridescent feathers, and sparkling rakhi blessings.',
+      mascotName: 'Graceful White Peacock Thanishqa 🦚',
+      mascotActionText: 'Tap the White Peacock to watch the radiant feather fan dance! 🪶💃'
     },
     interactiveWidget: {
       type: 'peacockFeathers',
-      title: 'Royal Radiance & Feather Bloom 🪶',
-      prompt: 'Tap to unfurl majestic iridescent feathers and celestial starlight!',
-      actionLabel: 'Unfurl Royal Plumes! 🦚',
-      statLabel: 'Royal Radiance Spun:',
+      title: 'White Peacock Plume Fan & Radiance Meter 🦚✨',
+      prompt: 'Tap to bloom radiant white peacock feathers and unleash shimmering crystal blessings!',
+      actionLabel: 'Fan Radiant Feathers! 🦚🪶',
+      statLabel: 'Feather Blooms:',
       quotes: [
-        '“Radiating pure poise, beauty, and kindness!” 🦚',
-        '“Elegance is the only beauty that never fades!” 👑',
-        '“May your year shine as brightly as iridescent plumes!” ✨',
-        '“True royalty in spirit and friendship!” 💎',
-        '“Wishing you a spectacular and regal Rakhi 2026!” 🌟'
+        '“Spreading grace, elegance, and pure brilliance everywhere you go!” 🦚✨',
+        '“Certified #1 graceful white peacock & wonderful college bestie!” 💎',
+        '“May your Raksha Bandhan bloom with endless elegance, peace, and joyous wonders!” 🪶',
+        '“Dazzling friendship that shines brighter than crystals!” 🌟',
+        '“Wishing you a majestic, radiant, and unforgettable Rakhi 2026!” 🦚'
       ]
     },
     letterPreview: {
       title: 'A Special Note for Thanishqa (White Peacock) 📜',
       tag: 'From Your Friend',
-      teaserText: 'Dear Thanishqa, your calm wisdom, genuine kindness, and radiant poise bring so much grace and positivity to our college circle. Thank you for being such an inspiring, thoughtful, and loyal friend. Wishing you a fabulous Raksha Bandhan 2026!',
-      signature: 'With Royal Warmth & Best Wishes! 🦚'
+      teaserText: 'Dear Thanishqa (our radiant White Peacock!), your effortless grace, bright intellect, and kind-hearted warmth make college life so extraordinary. Thank you for being such an uplifting, genuine, and supportive friend whose presence brings beauty and laughter to every conversation. Wishing you a magnificent Raksha Bandhan 2026 filled with sparkling success, serenity, and endless happiness!',
+      signature: 'With Royal Warmth & Peacock Splendor! 🦚✨'
     },
     giftTeaser: {
-      title: 'Thanishqa\'s Regal Rakhi Gift Box 🎁',
+      title: 'Thanishqa\'s Crystal Peacock Gift Vault 🎁',
       badge: 'Rakhi Special',
-      description: 'An iridescent emerald-and-silver gift box crowned with a peacock plume. Complete the Royal Labyrinth to unwrap!',
-      mysteryClue: 'Clue: Shimmering, sophisticated, crystal-adorned, and fit for royalty 🦚',
-      revealMessage: 'Happy Rakhi 2026, White Peacock! 🦚 May your year unfold with brilliance, elegance, and crowning achievements!'
+      description: 'An iridescent pearl-white gift box shimmering with sapphire-blue & emerald silk ribbons. Complete the White Peacock Feather Quest to unwrap!',
+      mysteryClue: 'Clue: Luminous, royal, crowned with crystal plumage, and crafted specially for our graceful White Peacock 🦚💎',
+      revealMessage: 'Happy Rakhi 2026, Thanishqa (White Peacock)! 🦚✨ May your life be crowned with glory, good fortune, and everlasting smiles!'
     }
   },
 
@@ -329,8 +329,8 @@ export const RECIPIENTS = {
     roleTag: 'The Meadow Rabbit Champion',
     emoji: '🐰',
     mascotEmoji: '🥕',
-    password: 'bunny',
-    hint: 'Think of a cute, fluffy meadow companion with long ears! 🐰🥕',
+    password: 'brother',
+    hint: 'Who sent you this special Rakhi surprise? (Try "brother"!)',
     welcomeQuote: '"Stay fluffy, hop high, and keep munching on sweet victories. Happy Raksha Bandhan 2026! 🥕✨"',
     theme: {
       key: 'rabbit-meadow',
@@ -431,5 +431,3 @@ export const resetAllProgression = () => {
     console.warn('Could not reset progress:', err);
   }
 };
-
-

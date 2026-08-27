@@ -1152,23 +1152,24 @@
 .duck-part-beak,
 .duck-part-ripple,
 .duck-part-splash,
-.peacock-fan-tail,
-.peacock-plume,
-.peacock-part-leg-l,
-.peacock-part-leg-r,
-.peacock-part-body,
-.peacock-part-wing-l,
-.peacock-part-wing-r,
-.peacock-part-head,
-.peacock-part-crest,
-.chiti-part-foot-l,
-.chiti-part-foot-r,
-.chiti-part-dress,
-.chiti-part-arm-l,
-.chiti-part-arm-r,
-.chiti-part-head,
-.chiti-part-bun-l,
-.chiti-part-bun-r {
+.monkey-part-tail,
+.monkey-part-leg-l,
+.monkey-part-leg-r,
+.monkey-part-body,
+.monkey-part-arm-l,
+.monkey-part-arm-r,
+.monkey-part-head,
+.monkey-ear-l,
+.monkey-ear-r,
+.teddy-part-foot-l,
+.teddy-part-foot-r,
+.teddy-part-body,
+.teddy-part-arm-l,
+.teddy-part-arm-r,
+.teddy-part-head,
+.teddy-ear-l,
+.teddy-ear-r,
+.teddy-part-bow {
   transform-box: fill-box;
   backface-visibility: hidden;
 }
@@ -1198,26 +1199,27 @@
 .duck-part-ripple { transform-origin: 50% 50%; }
 .duck-part-splash { transform-origin: 50% 50%; }
 
-/* Peacock Joints */
-.peacock-fan-tail { transform-origin: 50% 100%; }
-.peacock-plume { transform-origin: 50% 100%; }
-.peacock-part-leg-l { transform-origin: 50% 0%; }
-.peacock-part-leg-r { transform-origin: 50% 0%; }
-.peacock-part-body { transform-origin: 50% 80%; }
-.peacock-part-wing-l { transform-origin: 85% 15%; }
-.peacock-part-wing-r { transform-origin: 15% 15%; }
-.peacock-part-head { transform-origin: 50% 85%; }
-.peacock-part-crest { transform-origin: 50% 100%; }
+/* Monkey Joints */
+.monkey-part-tail { transform-origin: 90% 90%; }
+.monkey-part-leg-l { transform-origin: 50% 0%; }
+.monkey-part-leg-r { transform-origin: 50% 0%; }
+.monkey-part-body { transform-origin: 50% 80%; }
+.monkey-part-arm-l { transform-origin: 85% 15%; }
+.monkey-part-arm-r { transform-origin: 15% 15%; }
+.monkey-part-head { transform-origin: 50% 85%; }
+.monkey-ear-l { transform-origin: 90% 50%; }
+.monkey-ear-r { transform-origin: 10% 50%; }
 
-/* Chiti Joints */
-.chiti-part-foot-l { transform-origin: 50% 0%; }
-.chiti-part-foot-r { transform-origin: 50% 0%; }
-.chiti-part-dress { transform-origin: 50% 0%; }
-.chiti-part-arm-l { transform-origin: 85% 15%; }
-.chiti-part-arm-r { transform-origin: 15% 15%; }
-.chiti-part-head { transform-origin: 50% 85%; }
-.chiti-part-bun-l { transform-origin: 50% 100%; }
-.chiti-part-bun-r { transform-origin: 50% 100%; }
+/* Teddy Bear Joints */
+.teddy-part-foot-l { transform-origin: 50% 0%; }
+.teddy-part-foot-r { transform-origin: 50% 0%; }
+.teddy-part-body { transform-origin: 50% 80%; }
+.teddy-part-arm-l { transform-origin: 85% 15%; }
+.teddy-part-arm-r { transform-origin: 15% 15%; }
+.teddy-part-head { transform-origin: 50% 85%; }
+.teddy-ear-l { transform-origin: 85% 85%; }
+.teddy-ear-r { transform-origin: 15% 85%; }
+.teddy-part-bow { transform-origin: 50% 50%; }
 
 /* General Eye Blinking Keyframes */
 .cat-eyelid-anim,
@@ -1574,246 +1576,230 @@
 }
 
 /* ==========================================================================
-   🦚 3. THANISHQA: WHITE PEACOCK IDLE & ROYAL FAN UNFURL DANCE
+   🦚 3. THANISHQA: WHITE PEACOCK IDLE & FEATHER FAN DANCE
    ========================================================================== */
 
-/* Peacock Idle - Plumes clustered in elegant folded bouquet */
-.peacock-idle-active .peacock-plume {
-  transform: rotate(calc(var(--target-angle) * 0.35));
-  transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
+/* Peacock Idle Animations */
 .peacock-idle-active .peacock-part-head {
-  animation: peacockHeadIdle 3s ease-in-out infinite alternate;
+  animation: peacockHeadIdle 2.8s ease-in-out infinite alternate;
+}
+.peacock-idle-active .peacock-part-fan {
+  animation: peacockFanIdle 3s ease-in-out infinite alternate;
 }
 .peacock-idle-active .peacock-part-crest {
-  animation: peacockCrestIdle 2.5s ease-in-out infinite alternate;
+  animation: peacockCrestIdle 3.4s ease-in-out infinite alternate;
 }
-.peacock-idle-active .peacock-part-wing-l,
+.peacock-idle-active .peacock-part-wing-l {
+  animation: peacockWingLeftIdle 2.6s ease-in-out infinite alternate;
+}
 .peacock-idle-active .peacock-part-wing-r {
-  animation: peacockWingIdle 3.2s ease-in-out infinite alternate;
+  animation: peacockWingRightIdle 2.6s ease-in-out infinite alternate;
 }
 
 @keyframes peacockHeadIdle {
-  0% { transform: translateY(0) rotate(0deg); }
-  100% { transform: translateY(-3px) rotate(3deg); }
+  0% { transform: translateY(0) rotate(-1.5deg); }
+  100% { transform: translateY(-3px) rotate(2deg); }
+}
+
+@keyframes peacockFanIdle {
+  0% { transform: scale(0.98) translateY(0); filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.3)); }
+  100% { transform: scale(1.03) translateY(-2px); filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.6)); }
 }
 
 @keyframes peacockCrestIdle {
+  0%, 80%, 100% { transform: rotate(0deg); }
+  85% { transform: rotate(-4deg) scale(1.05); }
+  92% { transform: rotate(4deg) scale(1.05); }
+}
+
+@keyframes peacockWingLeftIdle {
   0% { transform: rotate(0deg); }
-  100% { transform: rotate(-4deg); }
+  100% { transform: rotate(-3deg) translateY(-1px); }
 }
 
-@keyframes peacockWingIdle {
-  0% { transform: scale(1); }
-  100% { transform: scale(1.03) rotate(2deg); }
+@keyframes peacockWingRightIdle {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(3deg) translateY(-1px); }
 }
 
-/* 🦚 PEACOCK ROYAL DANCE CHOREOGRAPHY */
-/* Progressive radial plume opening with wave shimmer */
-.peacock-dance-active .peacock-plume {
-  animation: peacockPlumeUnfurl 2.2s cubic-bezier(0.34, 1.56, 0.64, 1) infinite alternate;
-  animation-delay: var(--plume-delay, 0s);
-}
-
-.peacock-dance-active .peacock-part-body {
-  animation: peacockBodyGrace 2.2s ease-in-out infinite alternate;
-}
-
+/* 🦚 WHITE PEACOCK MAJESTIC DANCE CHOREOGRAPHY */
 .peacock-dance-active .peacock-part-head {
-  animation: peacockHeadGrace 2.2s ease-in-out infinite alternate;
+  animation: peacockHeadDance 0.65s ease-in-out infinite alternate;
+}
+
+.peacock-dance-active .peacock-part-fan {
+  animation: peacockFanDance 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) infinite alternate;
 }
 
 .peacock-dance-active .peacock-part-crest {
-  animation: peacockCrestShimmer 1.1s ease-in-out infinite alternate;
+  animation: peacockCrestDance 0.35s ease-in-out infinite alternate;
 }
 
 .peacock-dance-active .peacock-part-wing-l {
-  animation: peacockWingGraceLeft 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
+  animation: peacockWingLeftDance 0.65s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
 }
 
 .peacock-dance-active .peacock-part-wing-r {
-  animation: peacockWingGraceRight 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
+  animation: peacockWingRightDance 0.65s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
 }
 
-.peacock-dance-active .peacock-part-leg-l {
-  animation: peacockPranceLeft 1.1s ease-in-out infinite alternate;
-}
-
-.peacock-dance-active .peacock-part-leg-r {
-  animation: peacockPranceRight 1.1s ease-in-out infinite alternate;
+.peacock-dance-active .peacock-part-legs {
+  animation: peacockLegDance 0.32s ease-in-out infinite alternate;
 }
 
 .peacock-character-wrapper.peacock-dance-active {
-  animation: peacockStageGrace 2.2s ease-in-out infinite alternate;
+  animation: peacockPirouetteDance 1.3s ease-in-out infinite;
 }
 
-@keyframes peacockPlumeUnfurl {
-  0% {
-    transform: rotate(calc(var(--target-angle) * 0.25)) scale(0.85);
-    opacity: 0.7;
-  }
-  40% {
-    transform: rotate(calc(var(--target-angle) * 0.7)) scale(0.95);
-    opacity: 0.85;
-  }
-  80%, 100% {
-    transform: rotate(var(--target-angle)) scale(1.08);
-    opacity: 1;
-    filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.6));
-  }
-}
-
-@keyframes peacockBodyGrace {
-  0% { transform: translateY(0) rotate(-3deg); }
-  50% { transform: translateY(-6px) rotate(0deg) scaleY(1.04); }
-  100% { transform: translateY(0) rotate(3deg); }
-}
-
-@keyframes peacockHeadGrace {
+@keyframes peacockHeadDance {
   0% { transform: translateY(0) rotate(-6deg); }
-  50% { transform: translateY(-8px) rotate(6deg); }
-  100% { transform: translateY(0) rotate(-6deg); }
+  100% { transform: translateY(-7px) rotate(6deg); }
 }
 
-@keyframes peacockCrestShimmer {
+@keyframes peacockFanDance {
+  0% { transform: scale(0.92) translateY(3px) rotate(-3deg); filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.4)); }
+  100% { transform: scale(1.12) translateY(-8px) rotate(3deg); filter: drop-shadow(0 0 25px rgba(56, 189, 248, 0.95)) drop-shadow(0 0 35px rgba(16, 185, 129, 0.6)); }
+}
+
+@keyframes peacockCrestDance {
   0% { transform: rotate(-8deg) scale(0.95); }
-  100% { transform: rotate(8deg) scale(1.1); filter: drop-shadow(0 0 8px #ffd166); }
+  100% { transform: rotate(8deg) scale(1.15); filter: drop-shadow(0 0 8px #fde047); }
 }
 
-@keyframes peacockWingGraceLeft {
-  0% { transform: rotate(0deg); }
-  50% { transform: rotate(-28deg) translateY(-4px); }
-  100% { transform: rotate(4deg); }
+@keyframes peacockWingLeftDance {
+  0% { transform: rotate(-35deg) translateY(-8px) scale(1.05); }
+  100% { transform: rotate(18deg) translateY(4px) scale(0.95); }
 }
 
-@keyframes peacockWingGraceRight {
-  0% { transform: rotate(0deg); }
-  50% { transform: rotate(28deg) translateY(-4px); }
-  100% { transform: rotate(-4deg); }
+@keyframes peacockWingRightDance {
+  0% { transform: rotate(35deg) translateY(-8px) scale(1.05); }
+  100% { transform: rotate(-18deg) translateY(4px) scale(0.95); }
 }
 
-@keyframes peacockPranceLeft {
+@keyframes peacockLegDance {
   0% { transform: translateY(0); }
-  100% { transform: translateY(-8px) rotate(-4deg); }
+  100% { transform: translateY(-6px); }
 }
 
-@keyframes peacockPranceRight {
-  0% { transform: translateY(-8px) rotate(4deg); }
-  100% { transform: translateY(0); }
-}
-
-@keyframes peacockStageGrace {
+@keyframes peacockPirouetteDance {
   0% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-12px) scale(1.04); }
+  25% { transform: translateY(-14px) rotate(-3deg) scale(1.06); }
+  50% { transform: translateY(0) scale(0.96); }
+  75% { transform: translateY(-14px) rotate(3deg) scale(1.06); }
   100% { transform: translateY(0) scale(1); }
 }
 
 /* ==========================================================================
-   ❤️ 4. SIRI CHAITHRA / CHITI: CHIBI SISTER IDLE & CELEBRATION DANCE
+   🧸 4. SIRI CHAITHRA: CUDDLY TEDDY BEAR IDLE & WADDLE DANCE
    ========================================================================== */
 
-/* Chiti Idle */
-.chiti-idle-active .chiti-part-head {
-  animation: chitiHeadIdle 2.5s ease-in-out infinite alternate;
+/* Teddy Bear Idle */
+.teddy-idle-active .teddy-part-head {
+  animation: teddyHeadIdle 2.6s ease-in-out infinite alternate;
 }
-.chiti-idle-active .chiti-part-bun-l,
-.chiti-idle-active .chiti-part-bun-r {
-  animation: chitiBunIdle 2s ease-in-out infinite alternate;
+.teddy-idle-active .teddy-ear-l,
+.teddy-idle-active .teddy-ear-r {
+  animation: teddyEarIdle 2.2s ease-in-out infinite alternate;
 }
-.chiti-idle-active .chiti-part-dress {
-  animation: chitiDressIdle 3s ease-in-out infinite alternate;
+.teddy-idle-active .teddy-part-arm-l,
+.teddy-idle-active .teddy-part-arm-r {
+  animation: teddyArmIdle 2.8s ease-in-out infinite alternate;
 }
-.chiti-idle-active .chiti-open-smile {
-  opacity: 0;
+.teddy-idle-active .teddy-part-bow {
+  animation: teddyBowIdle 2s ease-in-out infinite alternate;
 }
 
-@keyframes chitiHeadIdle {
+@keyframes teddyHeadIdle {
   0% { transform: translateY(0) rotate(-2deg); }
   100% { transform: translateY(-3px) rotate(2deg); }
 }
 
-@keyframes chitiBunIdle {
-  0% { transform: translateY(0) rotate(0deg); }
-  100% { transform: translateY(-2px) rotate(3deg); }
-}
-
-@keyframes chitiDressIdle {
+@keyframes teddyEarIdle {
   0% { transform: rotate(0deg); }
-  100% { transform: rotate(2deg); }
+  100% { transform: rotate(4deg) scale(1.05); }
 }
 
-/* ❤️ CHITI CELEBRATION DANCE CHOREOGRAPHY */
-.chiti-dance-active .chiti-part-head {
-  animation: chitiHeadDance 0.65s ease-in-out infinite;
+@keyframes teddyArmIdle {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(5deg); }
 }
 
-.chiti-dance-active .chiti-part-bun-l {
-  animation: chitiBunDanceLeft 0.32s ease-in-out infinite alternate;
+@keyframes teddyBowIdle {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.06); }
 }
 
-.chiti-dance-active .chiti-part-bun-r {
-  animation: chitiBunDanceRight 0.32s ease-in-out infinite alternate;
+/* 🧸 TEDDY BEAR CUDDLY DANCE CHOREOGRAPHY */
+.teddy-dance-active .teddy-part-head {
+  animation: teddyHeadDance 0.65s ease-in-out infinite alternate;
 }
 
-.chiti-dance-active .chiti-part-arm-l {
-  animation: chitiArmDanceLeft 0.65s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+.teddy-dance-active .teddy-ear-l {
+  animation: teddyEarDanceLeft 0.32s ease-in-out infinite alternate;
 }
 
-.chiti-dance-active .chiti-part-arm-r {
-  animation: chitiArmDanceRight 0.65s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+.teddy-dance-active .teddy-ear-r {
+  animation: teddyEarDanceRight 0.32s ease-in-out infinite alternate;
 }
 
-.chiti-dance-active .chiti-part-dress {
-  animation: chitiDressDance 0.65s ease-in-out infinite;
+.teddy-dance-active .teddy-part-arm-l {
+  animation: teddyArmDanceLeft 0.65s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
 }
 
-.chiti-dance-active .chiti-part-foot-l {
-  animation: chitiFootDanceLeft 0.65s ease-in-out infinite;
+.teddy-dance-active .teddy-part-arm-r {
+  animation: teddyArmDanceRight 0.65s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
 }
 
-.chiti-dance-active .chiti-part-foot-r {
-  animation: chitiFootDanceRight 0.65s ease-in-out infinite;
+.teddy-dance-active .teddy-part-foot-l {
+  animation: teddyFootDanceLeft 0.32s ease-in-out infinite alternate;
 }
 
-.chiti-dance-active .chiti-open-smile {
-  opacity: 1;
+.teddy-dance-active .teddy-part-foot-r {
+  animation: teddyFootDanceRight 0.32s ease-in-out infinite alternate;
 }
 
-.chiti-character-wrapper.chiti-dance-active {
-  animation: chitiPirouetteHop 1.3s ease-in-out infinite;
+.teddy-character-wrapper.teddy-dance-active {
+  animation: teddyWaddleBounce 0.65s ease-in-out infinite alternate;
 }
 
-@keyframes chitiHeadDance {
+@keyframes teddyHeadDance {
   0% { transform: translateY(0) rotate(-6deg); }
-  25% { transform: translateY(-5px) rotate(0deg); }
-  50% { transform: translateY(2px) rotate(6deg); }
-  75% { transform: translateY(-5px) rotate(0deg); }
-  100% { transform: translateY(0) rotate(-6deg); }
+  100% { transform: translateY(-6px) rotate(6deg); }
 }
 
-@keyframes chitiBunDanceLeft {
-  0% { transform: translateY(0) rotate(-8deg); }
-  100% { transform: translateY(-6px) rotate(12deg); }
+@keyframes teddyEarDanceLeft {
+  0% { transform: rotate(-8deg); }
+  100% { transform: rotate(10deg); }
 }
 
-@keyframes chitiBunDanceRight {
-  0% { transform: translateY(-6px) rotate(12deg); }
-  100% { transform: translateY(0) rotate(-8deg); }
+@keyframes teddyEarDanceRight {
+  0% { transform: rotate(10deg); }
+  100% { transform: rotate(-8deg); }
 }
 
-@keyframes chitiArmDanceLeft {
-  0% { transform: rotate(-35deg) translateY(-8px); } /* Raised wave */
-  35% { transform: rotate(15deg) translateY(0); }   /* Clap in center */
-  70% { transform: rotate(-45deg) translateY(-14px); } /* High celebration */
-  100% { transform: rotate(-35deg) translateY(-8px); }
+@keyframes teddyArmDanceLeft {
+  0% { transform: rotate(-35deg) translateY(-8px); }
+  100% { transform: rotate(20deg) translateY(4px); }
 }
 
-@keyframes chitiArmDanceRight {
-  0% { transform: rotate(35deg) translateY(-8px); } /* Raised wave */
-  35% { transform: rotate(-15deg) translateY(0); }  /* Clap in center */
-  70% { transform: rotate(45deg) translateY(-14px); } /* High celebration */
-  100% { transform: rotate(35deg) translateY(-8px); }
+@keyframes teddyArmDanceRight {
+  0% { transform: rotate(35deg) translateY(-8px); }
+  100% { transform: rotate(-20deg) translateY(4px); }
+}
+
+@keyframes teddyFootDanceLeft {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-6px) rotate(-4deg); }
+}
+
+@keyframes teddyFootDanceRight {
+  0% { transform: translateY(-6px) rotate(4deg); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes teddyWaddleBounce {
+  0% { transform: translateY(0) rotate(-3deg); }
+  100% { transform: translateY(-10px) rotate(3deg); }
 }
 
 @keyframes chitiDressDance {
@@ -2571,96 +2557,110 @@
   color: #fbcfe8;
 }
 
-/* Peacock Maze */
+/* Peacock Game */
 .peacock-theme-btn {
-  background: linear-gradient(135deg, #10b981, #0284c7) !important;
+  background: linear-gradient(135deg, #0284c7, #10b981) !important;
+  color: #ffffff !important;
 }
 
-.peacock-maze-stage {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
+.game-peacock {
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(56, 189, 248, 0.2);
 }
 
-.maze-grid-container {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  background: rgba(0, 0, 0, 0.4);
-  padding: 10px;
-  border-radius: var(--radius-xl);
-  border: 2px solid rgba(16, 185, 129, 0.3);
-  width: 100%;
-  aspect-ratio: 1 / 1;
+.peacock-chip {
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #bae6fd;
 }
 
-.maze-grid-row {
-  display: flex;
-  gap: 6px;
-  flex: 1;
-}
-
-.maze-cell {
-  flex: 1;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.4rem;
+.plume-catcher-stage {
   position: relative;
+  width: 100%;
+  height: 290px;
+  background: radial-gradient(ellipse at 50% 30%, #0c4a6e 0%, #082f49 50%, #031422 100%);
+  border: 2px solid rgba(56, 189, 248, 0.35);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
 }
 
-.cell-path {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.celestial-sky-bg .sky-cloud {
+  position: absolute;
+  font-size: 1.5rem;
+  opacity: 0.25;
+  pointer-events: none;
+}
+.cloud-1 { top: 15%; left: 10%; }
+.cloud-2 { top: 35%; right: 12%; }
+.cloud-3 { top: 55%; left: 18%; }
+
+.falling-plume-item {
+  position: absolute;
+  font-size: 2.2rem;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.8));
+  user-select: none;
+  pointer-events: none;
 }
 
-.cell-wall {
-  background: rgba(6, 78, 59, 0.85);
-  border: 1.5px solid rgba(16, 185, 129, 0.5);
+.basket-peacock-sprite {
+  font-size: 2.4rem;
+  filter: drop-shadow(0 0 14px rgba(56, 189, 248, 0.9));
+  user-select: none;
 }
 
-.maze-dpad-controls {
+/* Stage 3 Moonstone Crown Boss */
+.moonstone-boss-stage {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  margin-top: 4px;
+  gap: 14px;
+  width: 100%;
 }
 
-.dpad-mid-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.peacock-hp {
+  background: linear-gradient(90deg, #38bdf8, #10b981, #fde047) !important;
 }
 
-.dpad-btn {
-  width: 52px;
-  height: 52px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1.5px solid rgba(255, 255, 255, 0.25);
-  border-radius: var(--radius-lg);
-  color: #ffffff;
+.moonstone-target-container {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  background: radial-gradient(circle at 50% 50%, #0c4a6e 0%, #031422 100%);
+  border: 2px solid rgba(56, 189, 248, 0.5);
+  border-radius: var(--radius-xl);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 12px;
   cursor: pointer;
+  overflow: hidden;
+  user-select: none;
 }
 
-.dpad-btn:active {
-  background: rgba(16, 185, 129, 0.4);
-  transform: scale(0.92);
+.moonstone-target-container:active {
+  transform: scale(0.98);
 }
 
-.dpad-center-hub {
-  width: 52px;
-  height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffd166;
-  opacity: 0.5;
+.moonstone-crown-sprite {
+  font-size: 4.8rem;
+  filter: drop-shadow(0 0 24px rgba(56, 189, 248, 0.9));
+}
+
+.crown-peacock-gold {
+  color: #fde047;
+  filter: drop-shadow(0 0 20px rgba(253, 224, 71, 0.8));
+}
+
+.peacock-ring {
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.4) 0%, transparent 70%);
+}
+
+.peacock-unlock-card {
+  background: rgba(8, 38, 59, 0.85);
+  border: 1.5px solid rgba(56, 189, 248, 0.4);
+  color: #f0f9ff;
 }
 
 /* --------------------------------------------------------------------------
@@ -3419,5 +3419,709 @@
   transform: translateY(-2px) scale(1.04);
   box-shadow: 0 6px 24px rgba(255, 51, 102, 0.7);
 }
+
+/* ==========================================================================
+   🎮 COMPLETE UPGRADED MINI-GAME ARCADE ENGINE STYLING
+   ========================================================================== */
+.game-arcade-frame {
+  position: relative;
+  width: 95%;
+  max-width: 620px;
+  min-height: 520px;
+  background: rgba(18, 5, 20, 0.92);
+  border-radius: var(--radius-2xl);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8), 0 0 40px rgba(245, 158, 11, 0.25);
+  backdrop-filter: blur(25px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 16px;
+  color: #ffffff;
+}
+
+/* Arcade Theme Glows */
+.jungle-arcade-theme {
+  border-color: rgba(245, 158, 11, 0.45);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8), 0 0 35px rgba(245, 158, 11, 0.35);
+  background: radial-gradient(ellipse at top, #14532d 0%, #064e3b 60%, #021a0f 100%);
+}
+
+.teddy-arcade-theme {
+  border-color: rgba(255, 51, 102, 0.45);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8), 0 0 35px rgba(255, 51, 102, 0.35);
+  background: radial-gradient(ellipse at top, #3d0c24 0%, #200715 60%, #0d0108 100%);
+}
+
+.duck-arcade-theme {
+  border-color: rgba(6, 182, 212, 0.45);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8), 0 0 35px rgba(6, 182, 212, 0.35);
+  background: radial-gradient(ellipse at top, #083344 0%, #032030 60%, #010f18 100%);
+}
+
+.cat-arcade-theme {
+  border-color: rgba(168, 85, 247, 0.45);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8), 0 0 35px rgba(168, 85, 247, 0.35);
+  background: radial-gradient(ellipse at top, #2e1065 0%, #17082c 60%, #090312 100%);
+}
+
+.rabbit-arcade-theme {
+  border-color: rgba(236, 72, 153, 0.45);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8), 0 0 35px rgba(236, 72, 153, 0.35);
+  background: radial-gradient(ellipse at top, #2e0832 0%, #15031a 60%, #08010b 100%);
+}
+
+/* Arcade Header HUD */
+.arcade-hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: var(--radius-lg);
+  margin-bottom: 12px;
+}
+
+.hud-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hud-stage-pill {
+  font-size: 0.82rem;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  color: #ffd166;
+}
+
+.hud-score-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.hud-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hud-combo-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: #ffffff;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.btn-arcade-close {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-arcade-close:hover {
+  background: rgba(239, 68, 68, 0.4);
+  transform: scale(1.1);
+}
+
+/* Toast Banner */
+.arcade-toast-banner {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 209, 102, 0.3);
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ffd166;
+  margin-bottom: 10px;
+}
+
+/* Floating score tags */
+.floating-score-tag {
+  position: absolute;
+  font-weight: 900;
+  font-size: 1.1rem;
+  pointer-events: none;
+  z-index: 100;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  animation: floatScoreUp 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes floatScoreUp {
+  0% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -45px) scale(1.25); }
+}
+
+/* Arcade Playfield Canvas */
+.arcade-playfield {
+  position: relative;
+  flex: 1;
+  min-height: 380px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.playfield-sub-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.3);
+  font-size: 0.84rem;
+  color: #e2e8f0;
+  gap: 12px;
+}
+
+.progress-bar-track {
+  flex: 1;
+  max-width: 200px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  transition: width 0.25s ease-out;
+}
+
+/* Canopy / Meadow Basket */
+.canopy-basket {
+  user-select: none;
+  cursor: grab;
+  z-index: 10;
+  transition: left 0.08s linear;
+}
+
+.basket-monkey-sprite {
+  font-size: 2.8rem;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+}
+
+.touch-steering-row {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  pointer-events: auto;
+  z-index: 20;
+}
+
+.btn-steer {
+  background: rgba(255, 255, 255, 0.18);
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  backdrop-filter: blur(8px);
+}
+
+.btn-steer:active {
+  background: rgba(255, 209, 102, 0.4);
+  transform: scale(0.95);
+}
+
+.steer-hint {
+  font-size: 0.74rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Vine Swing Area */
+.vine-playfield {
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+}
+
+.vine-anchor-point {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  display: flex;
+  justify-content: center;
+}
+
+.vine-rope {
+  position: absolute;
+  top: 0;
+  width: 6px;
+  height: 140px;
+  background: linear-gradient(180deg, #15803d, #854d0e);
+  border-radius: 3px;
+}
+
+.vine-monkey-hanger {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2.6rem;
+}
+
+.sweet-spot-indicator {
+  position: relative;
+  width: 80%;
+  max-width: 320px;
+  height: 16px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-full);
+  margin: 10px 0;
+}
+
+.sweet-spot-bar {
+  position: absolute;
+  left: 38%;
+  width: 24%;
+  height: 100%;
+  background: rgba(250, 204, 21, 0.6);
+  border-radius: 4px;
+}
+
+.sweet-spot-needle {
+  position: absolute;
+  top: -4px;
+  width: 8px;
+  height: 24px;
+  background: #ffffff;
+  border-radius: 4px;
+  transform: translateX(-50%);
+  box-shadow: 0 0 10px #facc15;
+}
+
+.swing-feedback-banner {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #fde047;
+}
+
+.btn-arcade-action-huge {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 1.05rem;
+  padding: 14px 28px;
+  border-radius: var(--radius-full);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  margin: 10px auto;
+  width: 90%;
+  max-width: 340px;
+}
+
+.btn-arcade-action-huge:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 8px 26px rgba(245, 158, 11, 0.7);
+}
+
+.btn-arcade-action-huge:active {
+  transform: scale(0.96);
+}
+
+/* Boss Fight Stage */
+.boss-playfield {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.boss-hud-card {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-lg);
+  padding: 10px 16px;
+}
+
+.boss-name-row {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 800;
+  font-size: 0.88rem;
+  margin-bottom: 6px;
+}
+
+.boss-hp-text {
+  color: #f87171;
+}
+
+.boss-hp-track {
+  width: 100%;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.boss-hp-fill {
+  height: 100%;
+  transition: width 0.1s linear;
+}
+
+.boss-target-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.boss-banana-target {
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  padding: 10px;
+  position: relative;
+  transition: transform 0.1s;
+}
+
+.boss-banana-target:active {
+  transform: scale(0.88);
+}
+
+.boss-banana-emoji {
+  font-size: 5rem;
+  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.6));
+}
+
+.boss-tap-instruction {
+  font-size: 0.88rem;
+  font-weight: 900;
+  color: #ffd166;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+/* 3-Lane Rooftop Runner */
+.rooftop-tracks-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  pointer-events: auto;
+}
+
+.rooftop-track-lane {
+  border-right: 1px dashed rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+}
+
+.rooftop-track-lane:last-child {
+  border-right: none;
+}
+
+.rooftop-track-lane.lane-highlight {
+  background: rgba(168, 85, 247, 0.08);
+}
+
+.cat-lane-sprite {
+  font-size: 2.8rem;
+  z-index: 10;
+  filter: drop-shadow(0 4px 12px rgba(168, 85, 247, 0.6));
+  transition: left 0.12s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.lane-steering-row {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  z-index: 20;
+}
+
+.btn-lane-tap {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  padding: 8px 4px;
+  border-radius: var(--radius-md);
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-lane-tap.is-active {
+  background: rgba(168, 85, 247, 0.5);
+  border-color: #ffd166;
+}
+
+/* Pond Water & Ripple Ducks */
+.pond-water-surface {
+  position: relative;
+  flex: 1;
+  width: 100%;
+}
+
+.swimming-duck-btn {
+  position: absolute;
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.swimming-duck-icon {
+  font-size: 2.6rem;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+}
+
+.water-ripple-ring {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border: 2px solid rgba(6, 182, 212, 0.6);
+  border-radius: 50%;
+  animation: pondRippleExpand 1.6s infinite ease-out;
+}
+
+@keyframes pondRippleExpand {
+  0% { transform: scale(0.4); opacity: 0.9; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* Sibling Memory Garden Grid */
+.memory-card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 16px;
+  flex: 1;
+}
+
+.memory-card {
+  aspect-ratio: 1;
+  background: none;
+  border: none;
+  cursor: pointer;
+  perspective: 600px;
+  outline: none;
+}
+
+.memory-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-style: preserve-3d;
+}
+
+.memory-card.is-flipped .memory-card-inner,
+.memory-card.is-matched .memory-card-inner {
+  transform: rotateY(180deg);
+}
+
+.memory-card-front,
+.memory-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden;
+}
+
+.memory-card-front {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  font-size: 1.6rem;
+}
+
+.memory-card-back {
+  background: rgba(255, 51, 102, 0.35);
+  border: 2px solid #ffd166;
+  transform: rotateY(180deg);
+  gap: 4px;
+}
+
+.card-revealed-icon {
+  font-size: 1.8rem;
+}
+
+.card-revealed-name {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #ffd166;
+}
+
+/* Craft Showcase */
+.craft-showcase-card {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+}
+
+.craft-rakhi-preview {
+  font-size: 4.5rem;
+  filter: drop-shadow(0 6px 18px rgba(255, 51, 102, 0.6));
+}
+
+.craft-step-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #ffd166;
+}
+
+.craft-step-desc {
+  font-size: 0.88rem;
+  color: #fbcfe8;
+  max-width: 320px;
+}
+
+.craft-step-dots {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.craft-dot {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  transition: all 0.2s;
+}
+
+.craft-dot.is-done {
+  background: rgba(16, 185, 129, 0.4);
+  border-color: #10b981;
+}
+
+.craft-dot.is-current {
+  border-color: #ffd166;
+  box-shadow: 0 0 12px #ffd166;
+  transform: scale(1.1);
+}
+
+/* Victory Screen */
+.victory-playfield {
+  padding: 28px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.victory-trophy-bubble {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #facc15, #f59e0b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 30px rgba(245, 158, 11, 0.5);
+  border: 3px solid rgba(255, 255, 255, 0.6);
+}
+
+.victory-main-title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #ffffff 0%, #ffd166 60%, #ff758c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.victory-subtitle {
+  font-size: 0.92rem;
+  color: #e2e8f0;
+  max-width: 400px;
+  line-height: 1.5;
+}
+
+.victory-reward-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 209, 102, 0.35);
+  border-radius: var(--radius-lg);
+  padding: 12px 16px;
+  text-align: left;
+  max-width: 420px;
+  font-size: 0.85rem;
+}
+
+.victory-reward-card strong {
+  color: #ffd166;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.victory-reward-card p {
+  margin: 0;
+  color: #cbd5e1;
+  font-size: 0.78rem;
+}
+
 
 

@@ -53,10 +53,10 @@ export default function AnimatedMascot({ recipient, onInteract }) {
         icons = ['💦', '🫧', '🪶', '💧', '🌊', '🫧', '✨', '💧'];
         break;
       case 'peacock':
-        icons = ['🪶', '💎', '✨', '🌟', '🪶', '💫', '💎', '✨'];
+        icons = ['🪶', '🦚', '💎', '✨', '👑', '🌟', '🪞', '💫'];
         break;
       case 'chiti':
-        icons = ['💖', '🌸', '✨', '🎀', '💕', '🌺', '⭐', '💖'];
+        icons = ['🧸', '💖', '🍯', '🎀', '🌸', '✨', '💕', '⭐'];
         break;
       case 'hanvika':
         icons = ['🥕', '🐰', '✨', '🌸', '🥕', '⭐', '🎀', '✨'];
@@ -88,9 +88,9 @@ export default function AnimatedMascot({ recipient, onInteract }) {
       case 'duck':
         return '🦆 Grishma\'s Waddle & Splash Dance! 🌊';
       case 'peacock':
-        return '🦚 Thanishqa\'s Royal Plume Fan Dance! ✨';
+        return '🦚 Thanishqa\'s White Peacock Feather Fan Dance! 🪶✨';
       case 'chiti':
-        return '💖 Siri Chaithra\'s Sibling Celebration Dance! 🌸';
+        return '🧸 Siri Chaithra\'s Cuddly Teddy Waddle Dance! 💖';
       case 'hanvika':
         return '🐰 Hanvika\'s Bunny Meadow Hop & Carrot Dance! 🥕';
       default:
@@ -141,8 +141,8 @@ export default function AnimatedMascot({ recipient, onInteract }) {
       <div className={`character-stage-frame ${isDancing ? 'dance-stage-active' : ''}`} key={danceCount}>
         {recipient.id === 'cat' && <CatCharacter isDancing={isDancing} />}
         {recipient.id === 'duck' && <DuckCharacter isDancing={isDancing} />}
-        {recipient.id === 'peacock' && <PeacockCharacter isDancing={isDancing} />}
-        {recipient.id === 'chiti' && <ChitiCharacter isDancing={isDancing} />}
+        {recipient.id === 'peacock' && <WhitePeacockCharacter isDancing={isDancing} />}
+        {recipient.id === 'chiti' && <TeddyBearCharacter isDancing={isDancing} />}
         {recipient.id === 'hanvika' && <RabbitCharacter isDancing={isDancing} />}
       </div>
 
@@ -511,23 +511,9 @@ function DuckCharacter({ isDancing }) {
 }
 
 /* ==========================================================================
-   🦚 3. THANISHQA: ORIGINAL ARTICULATED WHITE PEACOCK CHARACTER
+   🦚 3. THANISHQA: ARTICULATED WHITE PEACOCK CHARACTER
    ========================================================================== */
-function PeacockCharacter({ isDancing }) {
-  const plumes = [
-    { id: 1, angle: -65, delay: 0.04, length: 72 },
-    { id: 2, angle: -52, delay: 0.08, length: 80 },
-    { id: 3, angle: -39, delay: 0.12, length: 86 },
-    { id: 4, angle: -26, delay: 0.16, length: 90 },
-    { id: 5, angle: -13, delay: 0.20, length: 94 },
-    { id: 6, angle: 0, delay: 0.24, length: 96 },
-    { id: 7, angle: 13, delay: 0.20, length: 94 },
-    { id: 8, angle: 26, delay: 0.16, length: 90 },
-    { id: 9, angle: 39, delay: 0.12, length: 86 },
-    { id: 10, angle: 52, delay: 0.08, length: 80 },
-    { id: 11, angle: 65, delay: 0.04, length: 72 }
-  ];
-
+function WhitePeacockCharacter({ isDancing }) {
   return (
     <div className={`mascot-svg-wrapper peacock-character-wrapper ${isDancing ? 'peacock-dance-active' : 'peacock-idle-active'}`}>
       <svg
@@ -535,133 +521,260 @@ function PeacockCharacter({ isDancing }) {
         width="180"
         height="180"
         className="mascot-svg-canvas"
-        aria-label="Majestic Stylized White Peacock Character"
+        aria-label="Graceful White Peacock Character"
       >
         <defs>
-          <linearGradient id="whiteFeatherGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          {/* Pearlescent White Plumage Gradient */}
+          <linearGradient id="whitePlumeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#ffffff" />
-            <stop offset="50%" stopColor="#ecfdf5" />
-            <stop offset="100%" stopColor="#a7f3d0" />
+            <stop offset="50%" stopColor="#f0f9ff" />
+            <stop offset="85%" stopColor="#e0f2fe" />
+            <stop offset="100%" stopColor="#bae6fd" />
           </linearGradient>
-          <radialGradient id="peacockBodyGrad" cx="40%" cy="30%" r="70%">
+
+          {/* Soft White Body Shading */}
+          <radialGradient id="peacockBodyGrad" cx="38%" cy="32%" r="68%">
             <stop offset="0%" stopColor="#ffffff" />
-            <stop offset="60%" stopColor="#f0fdf4" />
-            <stop offset="100%" stopColor="#6ee7b7" />
+            <stop offset="65%" stopColor="#f8fafc" />
+            <stop offset="90%" stopColor="#e2e8f0" />
+            <stop offset="100%" stopColor="#cbd5e1" />
           </radialGradient>
-          <radialGradient id="ocellusEyeGrad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#ffd166" />
-            <stop offset="35%" stopColor="#06b6d4" />
-            <stop offset="70%" stopColor="#0284c7" />
-            <stop offset="100%" stopColor="#064e3b" />
+
+          {/* Glowing Peacock Feather Eye (Ocellus) */}
+          <radialGradient id="ocellusGlowGrad" cx="45%" cy="40%" r="60%">
+            <stop offset="0%" stopColor="#ffffff" />
+            <stop offset="35%" stopColor="#67e8f9" />
+            <stop offset="65%" stopColor="#0ea5e9" />
+            <stop offset="85%" stopColor="#10b981" />
+            <stop offset="100%" stopColor="#0369a1" />
           </radialGradient>
+
+          {/* Crest Crystal Gem Gradient */}
+          <radialGradient id="crestGemGrad" cx="35%" cy="35%" r="65%">
+            <stop offset="0%" stopColor="#ffffff" />
+            <stop offset="40%" stopColor="#38bdf8" />
+            <stop offset="100%" stopColor="#0284c7" />
+          </radialGradient>
+
+          {/* Golden Beak Gradient */}
+          <linearGradient id="peacockBeakGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#fef08a" />
+            <stop offset="50%" stopColor="#f59e0b" />
+            <stop offset="100%" stopColor="#d97706" />
+          </linearGradient>
+
+          {/* Sapphire Eyes Gradient */}
+          <radialGradient id="peacockEyeGrad" cx="35%" cy="30%" r="70%">
+            <stop offset="0%" stopColor="#60a5fa" />
+            <stop offset="55%" stopColor="#1d4ed8" />
+            <stop offset="100%" stopColor="#0f172a" />
+          </radialGradient>
+
+          {/* Rakhi Silk & Gold Gradient */}
+          <linearGradient id="peacockRakhiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#f43f5e" />
+            <stop offset="50%" stopColor="#e11d48" />
+            <stop offset="100%" stopColor="#be123c" />
+          </linearGradient>
         </defs>
 
-        {/* Ambient Starlight Ring */}
-        <ellipse cx="100" cy="180" rx="46" ry="10" fill="rgba(6, 78, 59, 0.4)" className="character-part-shadow peacock-shadow" />
+        {/* Ambient Floor Shadow */}
+        <ellipse cx="100" cy="180" rx="44" ry="8" fill="rgba(8, 36, 59, 0.45)" className="character-part-shadow peacock-shadow" />
 
-        {/* 🪶 MAJESTIC 11-PLUME FAN TAIL */}
-        <g className="peacock-fan-tail">
-          {plumes.map((p) => (
-            <g
-              key={p.id}
-              className={`peacock-plume peacock-plume-${p.id}`}
-              style={{
-                '--target-angle': `${p.angle}deg`,
-                '--plume-delay': `${p.delay}s`
-              }}
-            >
-              <line x1="100" y1="145" x2="100" y2={145 - p.length} stroke="#10b981" strokeWidth="1.6" opacity="0.8" />
-              <path
-                d={`M100,145 Q${92},${145 - p.length * 0.6} ${95},${145 - p.length} Q100,${145 - p.length - 8} ${105},${145 - p.length} Q${108},${145 - p.length * 0.6} 100,145 Z`}
-                fill="url(#whiteFeatherGrad)"
-                stroke="#10b981"
-                strokeWidth="1.2"
-                opacity="0.92"
-              />
-              <ellipse
-                cx="100"
-                cy={145 - p.length + 8}
-                rx="6.5"
-                ry="8.5"
-                fill="url(#ocellusEyeGrad)"
-                stroke="#ffffff"
-                strokeWidth="1"
-              />
-              <circle cx="100" cy={145 - p.length + 8} r="3" fill="#ffd166" />
-              <circle cx="100" cy={145 - p.length + 8} r="1.2" fill="#ffffff" />
-            </g>
-          ))}
-        </g>
-
-        {/* 🦵 Slender Legs / Prancing Feet */}
-        <g className="peacock-part-leg-l">
-          <line x1="90" y1="152" x2="88" y2="175" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" />
-          <path d="M88,175 L80,178 M88,175 L88,180 M88,175 L95,178" stroke="#10b981" strokeWidth="1.8" strokeLinecap="round" />
-        </g>
-
-        <g className="peacock-part-leg-r">
-          <line x1="110" y1="152" x2="112" y2="175" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" />
-          <path d="M112,175 L105,178 M112,175 L112,180 M112,175 L120,178" stroke="#10b981" strokeWidth="1.8" strokeLinecap="round" />
-        </g>
-
-        {/* 🦚 Slender Royal Body */}
-        <g className="peacock-part-body">
-          <path
-            d="M86,105 C78,122 80,148 90,158 C98,162 102,162 110,158 C120,148 122,122 114,105 C108,98 92,98 86,105 Z"
-            fill="url(#peacockBodyGrad)"
-            stroke="#10b981"
-            strokeWidth="1.8"
-          />
-          <path d="M92,115 Q100,128 108,115 Q100,138 92,115 Z" fill="#6ee7b7" opacity="0.6" />
-        </g>
-
-        {/* 🪶 Left Wing */}
-        <g className="peacock-part-wing-l">
-          <path
-            d="M84,108 C68,114 60,130 65,145 C72,150 82,142 84,130 Z"
-            fill="url(#whiteFeatherGrad)"
-            stroke="#10b981"
-            strokeWidth="1.5"
-          />
-          <path d="M72,125 Q68,136 74,142" stroke="#10b981" strokeWidth="1" fill="none" />
-        </g>
-
-        {/* 🪶 Right Wing */}
-        <g className="peacock-part-wing-r">
-          <path
-            d="M116,108 C132,114 140,130 135,145 C128,150 118,142 116,130 Z"
-            fill="url(#whiteFeatherGrad)"
-            stroke="#10b981"
-            strokeWidth="1.5"
-          />
-          <path d="M128,125 Q132,136 126,142" stroke="#10b981" strokeWidth="1" fill="none" />
-        </g>
-
-        {/* 🦚 Graceful Head, Curved Neck & Crystal Crest */}
-        <g className="peacock-part-head">
-          <g className="peacock-part-crest">
-            <line x1="96" y1="48" x2="88" y2="30" stroke="#10b981" strokeWidth="1.4" />
-            <circle cx="88" cy="29" r="3.5" fill="#38bdf8" stroke="#ffffff" strokeWidth="1" />
-            <circle cx="88" cy="29" r="1.5" fill="#ffd166" />
-
-            <line x1="100" y1="46" x2="100" y2="24" stroke="#10b981" strokeWidth="1.6" />
-            <circle cx="100" cy="23" r="4.5" fill="#ffd166" stroke="#ffffff" strokeWidth="1" />
-            <circle cx="100" cy="23" r="2" fill="#ffffff" />
-
-            <line x1="104" y1="48" x2="112" y2="30" stroke="#10b981" strokeWidth="1.4" />
-            <circle cx="112" cy="29" r="3.5" fill="#38bdf8" stroke="#ffffff" strokeWidth="1" />
-            <circle cx="112" cy="29" r="1.5" fill="#ffd166" />
+        {/* ================================================================
+            🪶 1. MAJESTIC RADIANT FEATHER FAN TRAIN (7 ARTICULATED PLUMES)
+           ================================================================ */}
+        <g className="peacock-part-fan">
+          {/* Plume 1 (Far Left -54 deg) */}
+          <g transform="translate(100, 142) rotate(-54)">
+            <path d="M0,0 Q-10,-48 0,-92 Q10,-48 0,0" fill="url(#whitePlumeGrad)" stroke="#bae6fd" strokeWidth="1" />
+            <line x1="0" y1="0" x2="0" y2="-90" stroke="#7dd3fc" strokeWidth="1.2" strokeLinecap="round" />
+            {/* Ocellus Plume Eye */}
+            <ellipse cx="0" cy="-78" rx="8.5" ry="11" fill="url(#ocellusGlowGrad)" stroke="#ffffff" strokeWidth="0.8" />
+            <ellipse cx="0" cy="-78" rx="4.5" ry="6.5" fill="#0284c7" />
+            <circle cx="-1.5" cy="-80" r="1.5" fill="#ffffff" />
+            <circle cx="1.5" cy="-76" r="0.8" fill="#fde047" />
           </g>
 
-          <path d="M94,102 Q92,76 96,62 Q100,56 104,62 Q108,76 106,102 Z" fill="url(#peacockBodyGrad)" stroke="#10b981" strokeWidth="1.5" />
-          <ellipse cx="100" cy="58" rx="16" ry="14" fill="url(#peacockBodyGrad)" stroke="#10b981" strokeWidth="1.8" />
-          <path d="M96,60 L80,64 L96,66 Z" fill="#ffd166" stroke="#ca8a04" strokeWidth="1.2" />
+          {/* Plume 2 (Left -36 deg) */}
+          <g transform="translate(100, 142) rotate(-36)">
+            <path d="M0,0 Q-11,-52 0,-102 Q11,-52 0,0" fill="url(#whitePlumeGrad)" stroke="#bae6fd" strokeWidth="1" />
+            <line x1="0" y1="0" x2="0" y2="-100" stroke="#7dd3fc" strokeWidth="1.2" strokeLinecap="round" />
+            <ellipse cx="0" cy="-86" rx="9" ry="12" fill="url(#ocellusGlowGrad)" stroke="#ffffff" strokeWidth="0.8" />
+            <ellipse cx="0" cy="-86" rx="5" ry="7" fill="#0284c7" />
+            <circle cx="-1.5" cy="-88" r="1.6" fill="#ffffff" />
+            <circle cx="1.5" cy="-84" r="0.8" fill="#fde047" />
+          </g>
 
-          <ellipse cx="104" cy="56" rx="3.5" ry="5" fill="#064e3b" />
-          <circle cx="103" cy="54" r="1.5" fill="#ffffff" />
-          <circle cx="105" cy="57" r="0.8" fill="#38bdf8" />
-          <path d="M100,56 Q104,50 108,56 Z" fill="#ffffff" className="peacock-eyelid-anim" />
-          <path d="M106,52 Q112,50 114,54" stroke="#10b981" strokeWidth="1" fill="none" />
+          {/* Plume 3 (Left Mid -18 deg) */}
+          <g transform="translate(100, 142) rotate(-18)">
+            <path d="M0,0 Q-12,-56 0,-110 Q12,-56 0,0" fill="url(#whitePlumeGrad)" stroke="#bae6fd" strokeWidth="1.1" />
+            <line x1="0" y1="0" x2="0" y2="-108" stroke="#7dd3fc" strokeWidth="1.3" strokeLinecap="round" />
+            <ellipse cx="0" cy="-94" rx="9.5" ry="12.5" fill="url(#ocellusGlowGrad)" stroke="#ffffff" strokeWidth="0.9" />
+            <ellipse cx="0" cy="-94" rx="5.2" ry="7.2" fill="#0284c7" />
+            <circle cx="-1.8" cy="-96" r="1.8" fill="#ffffff" />
+            <circle cx="1.8" cy="-92" r="0.9" fill="#fde047" />
+          </g>
+
+          {/* Plume 4 (Crown Center 0 deg) */}
+          <g transform="translate(100, 142) rotate(0)">
+            <path d="M0,0 Q-13,-58 0,-115 Q13,-58 0,0" fill="url(#whitePlumeGrad)" stroke="#bae6fd" strokeWidth="1.2" />
+            <line x1="0" y1="0" x2="0" y2="-113" stroke="#7dd3fc" strokeWidth="1.4" strokeLinecap="round" />
+            <ellipse cx="0" cy="-98" rx="10" ry="13" fill="url(#ocellusGlowGrad)" stroke="#ffffff" strokeWidth="1" />
+            <ellipse cx="0" cy="-98" rx="5.5" ry="7.5" fill="#0284c7" />
+            <circle cx="-2" cy="-100" r="2" fill="#ffffff" />
+            <circle cx="2" cy="-96" r="1" fill="#fde047" />
+          </g>
+
+          {/* Plume 5 (Right Mid +18 deg) */}
+          <g transform="translate(100, 142) rotate(18)">
+            <path d="M0,0 Q-12,-56 0,-110 Q12,-56 0,0" fill="url(#whitePlumeGrad)" stroke="#bae6fd" strokeWidth="1.1" />
+            <line x1="0" y1="0" x2="0" y2="-108" stroke="#7dd3fc" strokeWidth="1.3" strokeLinecap="round" />
+            <ellipse cx="0" cy="-94" rx="9.5" ry="12.5" fill="url(#ocellusGlowGrad)" stroke="#ffffff" strokeWidth="0.9" />
+            <ellipse cx="0" cy="-94" rx="5.2" ry="7.2" fill="#0284c7" />
+            <circle cx="-1.8" cy="-96" r="1.8" fill="#ffffff" />
+            <circle cx="1.8" cy="-92" r="0.9" fill="#fde047" />
+          </g>
+
+          {/* Plume 6 (Right +36 deg) */}
+          <g transform="translate(100, 142) rotate(36)">
+            <path d="M0,0 Q-11,-52 0,-102 Q11,-52 0,0" fill="url(#whitePlumeGrad)" stroke="#bae6fd" strokeWidth="1" />
+            <line x1="0" y1="0" x2="0" y2="-100" stroke="#7dd3fc" strokeWidth="1.2" strokeLinecap="round" />
+            <ellipse cx="0" cy="-86" rx="9" ry="12" fill="url(#ocellusGlowGrad)" stroke="#ffffff" strokeWidth="0.8" />
+            <ellipse cx="0" cy="-86" rx="5" ry="7" fill="#0284c7" />
+            <circle cx="-1.5" cy="-88" r="1.6" fill="#ffffff" />
+            <circle cx="1.5" cy="-84" r="0.8" fill="#fde047" />
+          </g>
+
+          {/* Plume 7 (Far Right +54 deg) */}
+          <g transform="translate(100, 142) rotate(54)">
+            <path d="M0,0 Q-10,-48 0,-92 Q10,-48 0,0" fill="url(#whitePlumeGrad)" stroke="#bae6fd" strokeWidth="1" />
+            <line x1="0" y1="0" x2="0" y2="-90" stroke="#7dd3fc" strokeWidth="1.2" strokeLinecap="round" />
+            <ellipse cx="0" cy="-78" rx="8.5" ry="11" fill="url(#ocellusGlowGrad)" stroke="#ffffff" strokeWidth="0.8" />
+            <ellipse cx="0" cy="-78" rx="4.5" ry="6.5" fill="#0284c7" />
+            <circle cx="-1.5" cy="-80" r="1.5" fill="#ffffff" />
+            <circle cx="1.5" cy="-76" r="0.8" fill="#fde047" />
+          </g>
+
+          {/* Inner Covert Layer Feathers */}
+          <path d="M78,140 Q100,118 122,140 Q100,154 78,140 Z" fill="#ffffff" stroke="#bae6fd" strokeWidth="1.2" />
+        </g>
+
+        {/* 🦶 Delicate Golden Legs & Feet */}
+        <g className="peacock-part-legs">
+          <g className="peacock-leg-l">
+            <line x1="88" y1="158" x2="86" y2="176" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
+            <path d="M80,176 L86,176 L92,176 M86,176 L86,173" stroke="#f59e0b" strokeWidth="2.2" strokeLinecap="round" />
+          </g>
+          <g className="peacock-leg-r">
+            <line x1="112" y1="158" x2="114" y2="176" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
+            <path d="M108,176 L114,176 L120,176 M114,176 L114,173" stroke="#f59e0b" strokeWidth="2.2" strokeLinecap="round" />
+          </g>
+        </g>
+
+        {/* 🕊️ Pearlescent Body & Fluffy Chest */}
+        <g className="peacock-part-body">
+          <ellipse cx="100" cy="138" rx="25" ry="28" fill="url(#peacockBodyGrad)" stroke="#bae6fd" strokeWidth="1.5" />
+          {/* Subtle chest feather contours */}
+          <path d="M90,132 Q100,140 110,132" fill="none" stroke="#bae6fd" strokeWidth="1" strokeLinecap="round" />
+          <path d="M88,142 Q100,150 112,142" fill="none" stroke="#bae6fd" strokeWidth="1" strokeLinecap="round" />
+          <path d="M92,152 Q100,158 108,152" fill="none" stroke="#bae6fd" strokeWidth="1" strokeLinecap="round" />
+
+          {/* 🎀 Royal Rakhi Necklace & Diamond Pendant */}
+          <path d="M84,124 Q100,136 116,124" fill="none" stroke="url(#peacockRakhiGrad)" strokeWidth="2.5" strokeLinecap="round" />
+          {/* Gold Rakhi Central Jewel */}
+          <circle cx="100" cy="132" r="4.5" fill="#facc15" stroke="#dc2626" strokeWidth="1.2" />
+          <polygon points="100,128 103,132 100,136 97,132" fill="#38bdf8" />
+        </g>
+
+        {/* 🪽 Articulated Left Wing */}
+        <g className="peacock-part-wing-l">
+          <path
+            d="M78,124 C60,130 54,150 62,164 C70,168 82,156 82,138 Z"
+            fill="url(#whitePlumeGrad)"
+            stroke="#bae6fd"
+            strokeWidth="1.4"
+          />
+          {/* Layered wing feather curves */}
+          <path d="M68,138 Q62,152 70,160" fill="none" stroke="#7dd3fc" strokeWidth="1" />
+          <path d="M74,134 Q70,148 76,156" fill="none" stroke="#7dd3fc" strokeWidth="1" />
+        </g>
+
+        {/* 🪽 Articulated Right Wing */}
+        <g className="peacock-part-wing-r">
+          <path
+            d="M122,124 C140,130 146,150 138,164 C130,168 118,156 118,138 Z"
+            fill="url(#whitePlumeGrad)"
+            stroke="#bae6fd"
+            strokeWidth="1.4"
+          />
+          <path d="M132,138 Q138,152 130,160" fill="none" stroke="#7dd3fc" strokeWidth="1" />
+          <path d="M126,134 Q130,148 124,156" fill="none" stroke="#7dd3fc" strokeWidth="1" />
+        </g>
+
+        {/* 👑 Graceful Swan Neck, Cute Head, Crown Crest & Sparkling Eyes */}
+        <g className="peacock-part-head">
+          {/* Swan Neck */}
+          <path
+            d="M93,122 C92,102 94,88 96,76 L104,76 C106,88 108,102 107,122 Z"
+            fill="url(#whitePlumeGrad)"
+            stroke="#bae6fd"
+            strokeWidth="1.2"
+          />
+
+          {/* Head Base */}
+          <ellipse cx="100" cy="72" rx="23" ry="20" fill="url(#whitePlumeGrad)" stroke="#bae6fd" strokeWidth="1.5" />
+
+          {/* 💎 Imperial 4-Plume Crown Crest */}
+          <g className="peacock-part-crest">
+            {/* Crest Stalk 1 (Left) */}
+            <line x1="94" y1="53" x2="86" y2="34" stroke="#0284c7" strokeWidth="1.4" strokeLinecap="round" />
+            <ellipse cx="86" cy="32" rx="4" ry="5.5" fill="url(#crestGemGrad)" stroke="#ffffff" strokeWidth="0.8" />
+            <circle cx="85" cy="30" r="1.2" fill="#ffffff" />
+
+            {/* Crest Stalk 2 (Mid-Left) */}
+            <line x1="98" y1="52" x2="94" y2="28" stroke="#0284c7" strokeWidth="1.4" strokeLinecap="round" />
+            <ellipse cx="94" cy="26" rx="4.5" ry="6" fill="url(#crestGemGrad)" stroke="#ffffff" strokeWidth="0.8" />
+            <circle cx="93" cy="24" r="1.4" fill="#ffffff" />
+
+            {/* Crest Stalk 3 (Mid-Right) */}
+            <line x1="102" y1="52" x2="106" y2="28" stroke="#0284c7" strokeWidth="1.4" strokeLinecap="round" />
+            <ellipse cx="106" cy="26" rx="4.5" ry="6" fill="url(#crestGemGrad)" stroke="#ffffff" strokeWidth="0.8" />
+            <circle cx="105" cy="24" r="1.4" fill="#ffffff" />
+
+            {/* Crest Stalk 4 (Right) */}
+            <line x1="106" y1="53" x2="114" y2="34" stroke="#0284c7" strokeWidth="1.4" strokeLinecap="round" />
+            <ellipse cx="114" cy="32" rx="4" ry="5.5" fill="url(#crestGemGrad)" stroke="#ffffff" strokeWidth="0.8" />
+            <circle cx="113" cy="30" r="1.2" fill="#ffffff" />
+          </g>
+
+          {/* Rosy Glowing Cheeks */}
+          <ellipse cx="84" cy="76" rx="4.5" ry="3" fill="#f472b6" opacity="0.55" />
+          <ellipse cx="116" cy="76" rx="4.5" ry="3" fill="#f472b6" opacity="0.55" />
+
+          {/* 💎 Big Gorgeous Sapphire Eyes */}
+          <g className="peacock-eyes">
+            {/* Left Eye */}
+            <ellipse cx="89" cy="68" rx="6" ry="7.5" fill="url(#peacockEyeGrad)" />
+            <circle cx="87" cy="65.5" r="2.4" fill="#ffffff" />
+            <circle cx="91" cy="70.5" r="1.2" fill="#ffffff" />
+            <path d="M83,62 Q89,58 95,62" fill="none" stroke="#0284c7" strokeWidth="1.2" strokeLinecap="round" />
+
+            {/* Right Eye */}
+            <ellipse cx="111" cy="68" rx="6" ry="7.5" fill="url(#peacockEyeGrad)" />
+            <circle cx="109" cy="65.5" r="2.4" fill="#ffffff" />
+            <circle cx="113" cy="70.5" r="1.2" fill="#ffffff" />
+            <path d="M105,62 Q111,58 117,62" fill="none" stroke="#0284c7" strokeWidth="1.2" strokeLinecap="round" />
+          </g>
+
+          {/* 💛 Cute Golden Beak & Friendly Smile */}
+          <path
+            d="M93,76 Q100,74 107,76 Q100,88 93,76 Z"
+            fill="url(#peacockBeakGrad)"
+            stroke="#b45309"
+            strokeWidth="1"
+          />
+          <line x1="94" y1="76" x2="106" y2="76" stroke="#b45309" strokeWidth="0.8" />
         </g>
       </svg>
     </div>
@@ -669,162 +782,142 @@ function PeacockCharacter({ isDancing }) {
 }
 
 /* ==========================================================================
-   ❤️ 4. SIRI CHAITHRA / CHITI: ORIGINAL CHIBI SISTER CHARACTER
+   🧸 4. SIRI CHAITHRA: ARTICULATED CUDDLY TEDDY BEAR CHARACTER
    ========================================================================== */
-function ChitiCharacter({ isDancing }) {
+function TeddyBearCharacter({ isDancing }) {
   return (
-    <div className={`mascot-svg-wrapper chiti-character-wrapper ${isDancing ? 'chiti-dance-active' : 'chiti-idle-active'}`}>
+    <div className={`mascot-svg-wrapper teddy-character-wrapper ${isDancing ? 'teddy-dance-active' : 'teddy-idle-active'}`}>
       <svg
         viewBox="0 0 200 200"
         width="180"
         height="180"
         className="mascot-svg-canvas"
-        aria-label="Cute Chibi Sister Character"
+        aria-label="Cuddly Animated Teddy Bear Character"
       >
         <defs>
-          <radialGradient id="chitiSkinGrad" cx="40%" cy="35%" r="65%">
-            <stop offset="0%" stopColor="#fff1f2" />
-            <stop offset="80%" stopColor="#ffe4e6" />
-            <stop offset="100%" stopColor="#fecdd3" />
+          <radialGradient id="teddyFurGrad" cx="40%" cy="35%" r="65%">
+            <stop offset="0%" stopColor="#b45309" />
+            <stop offset="70%" stopColor="#92400e" />
+            <stop offset="100%" stopColor="#78350f" />
           </radialGradient>
-          <linearGradient id="chitiHairGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#3b0764" />
-            <stop offset="60%" stopColor="#2e1065" />
-            <stop offset="100%" stopColor="#1e0a45" />
-          </linearGradient>
-          <linearGradient id="chitiDressGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#ff758c" />
-            <stop offset="50%" stopColor="#ff3366" />
-            <stop offset="100%" stopColor="#c026d3" />
-          </linearGradient>
-          <linearGradient id="chitiRibbonGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#ffd166" />
-            <stop offset="100%" stopColor="#f59e0b" />
+          <radialGradient id="teddySnoutGrad" cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stopColor="#fef3c7" />
+            <stop offset="85%" stopColor="#fde68a" />
+            <stop offset="100%" stopColor="#fcd34d" />
+          </radialGradient>
+          <linearGradient id="teddyBowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#ff3366" />
+            <stop offset="50%" stopColor="#ff758c" />
+            <stop offset="100%" stopColor="#f43f5e" />
           </linearGradient>
         </defs>
 
-        {/* Floor Shadow */}
-        <ellipse cx="100" cy="180" rx="38" ry="8" fill="rgba(45, 12, 28, 0.4)" className="character-part-shadow chiti-shadow" />
+        {/* Ambient Floor Shadow */}
+        <ellipse cx="100" cy="180" rx="44" ry="8" fill="rgba(45, 12, 28, 0.4)" className="character-part-shadow teddy-shadow" />
 
-        {/* 👠 Dancing Shoes / Feet */}
-        <g className="chiti-part-foot-l">
-          <line x1="88" y1="152" x2="88" y2="172" stroke="#ffe4e6" strokeWidth="4" strokeLinecap="round" />
-          <ellipse cx="86" cy="174" rx="8" ry="4.5" fill="#ff3366" stroke="#ffd166" strokeWidth="1.2" />
+        {/* 🧸 Plush Feet with Stitched Paw Pads */}
+        <g className="teddy-part-foot-l">
+          <ellipse cx="78" cy="168" rx="14" ry="10" fill="url(#teddyFurGrad)" stroke="#78350f" strokeWidth="1.2" />
+          <ellipse cx="78" cy="168" rx="7" ry="5" fill="url(#teddySnoutGrad)" />
+          <circle cx="73" cy="163" r="1.6" fill="url(#teddySnoutGrad)" />
+          <circle cx="78" cy="161" r="1.6" fill="url(#teddySnoutGrad)" />
+          <circle cx="83" cy="163" r="1.6" fill="url(#teddySnoutGrad)" />
         </g>
 
-        <g className="chiti-part-foot-r">
-          <line x1="112" y1="152" x2="112" y2="172" stroke="#ffe4e6" strokeWidth="4" strokeLinecap="round" />
-          <ellipse cx="114" cy="174" rx="8" ry="4.5" fill="#ff3366" stroke="#ffd166" strokeWidth="1.2" />
+        <g className="teddy-part-foot-r">
+          <ellipse cx="122" cy="168" rx="14" ry="10" fill="url(#teddyFurGrad)" stroke="#78350f" strokeWidth="1.2" />
+          <ellipse cx="122" cy="168" rx="7" ry="5" fill="url(#teddySnoutGrad)" />
+          <circle cx="117" cy="163" r="1.6" fill="url(#teddySnoutGrad)" />
+          <circle cx="122" cy="161" r="1.6" fill="url(#teddySnoutGrad)" />
+          <circle cx="127" cy="163" r="1.6" fill="url(#teddySnoutGrad)" />
         </g>
 
-        {/* 👗 Flowing Festive Dress / Lehenga */}
-        <g className="chiti-part-dress">
-          <path
-            d="M84,118 L60,156 Q100,166 140,156 L116,118 Z"
-            fill="url(#chitiDressGrad)"
-            stroke="#ff758c"
-            strokeWidth="1.8"
-          />
-          <path
-            d="M60,156 Q70,160 80,158 Q90,162 100,159 Q110,162 120,158 Q130,160 140,156"
-            fill="none"
-            stroke="#ffd166"
-            strokeWidth="3.5"
-            strokeLinecap="round"
-          />
-          <path d="M86,122 Q82,142 76,156" fill="none" stroke="#fbcfe8" strokeWidth="1.2" opacity="0.6" />
-          <path d="M100,120 Q100,144 100,158" fill="none" stroke="#fbcfe8" strokeWidth="1.2" opacity="0.6" />
-          <path d="M114,122 Q118,142 124,156" fill="none" stroke="#fbcfe8" strokeWidth="1.2" opacity="0.6" />
+        {/* 🧸 Soft Round Plush Body */}
+        <g className="teddy-part-body">
+          <ellipse cx="100" cy="134" rx="30" ry="32" fill="url(#teddyFurGrad)" stroke="#78350f" strokeWidth="1.2" />
+          <ellipse cx="100" cy="136" rx="20" ry="22" fill="url(#teddySnoutGrad)" />
 
+          {/* Embroidered Heart Patch */}
           <path
-            d="M84,98 L116,98 L114,120 L86,120 Z"
+            d="M100,132 C97,126 89,126 89,134 C89,140 100,147 100,147 C100,147 111,140 111,134 C111,126 103,126 100,132 Z"
             fill="#ff3366"
-            stroke="#ffd166"
-            strokeWidth="1.5"
+            stroke="#ffffff"
+            strokeWidth="1"
+            strokeDasharray="2,2"
           />
-          <rect x="84" y="116" width="32" height="4.5" rx="2" fill="url(#chitiRibbonGrad)" />
-          <circle cx="100" cy="108" r="4.5" fill="#ffd166" stroke="#ff3366" strokeWidth="1" />
-          <circle cx="100" cy="108" r="2" fill="#ff3366" />
         </g>
 
-        {/* 🖐️ Left Arm */}
-        <g className="chiti-part-arm-l">
-          <path
-            d="M84,100 Q66,108 58,124 Q56,128 62,130 Q68,130 74,120 Q80,112 86,104 Z"
-            fill="url(#chitiSkinGrad)"
-            stroke="#f43f5e"
-            strokeWidth="1.2"
-          />
-          <ellipse cx="62" cy="126" rx="3.5" ry="2" fill="#ffd166" />
-          <circle cx="58" cy="128" r="4" fill="url(#chitiSkinGrad)" />
+        {/* 🖐️ Left Plush Arm (Waving) */}
+        <g className="teddy-part-arm-l">
+          <ellipse cx="64" cy="120" rx="11" ry="18" fill="url(#teddyFurGrad)" stroke="#78350f" strokeWidth="1.2" transform="rotate(25, 64, 120)" />
+          <ellipse cx="60" cy="116" rx="5" ry="6" fill="url(#teddySnoutGrad)" />
         </g>
 
-        {/* 🖐️ Right Arm */}
-        <g className="chiti-part-arm-r">
-          <path
-            d="M116,100 Q134,108 142,124 Q144,128 138,130 Q132,130 126,120 Q120,112 114,104 Z"
-            fill="url(#chitiSkinGrad)"
-            stroke="#f43f5e"
-            strokeWidth="1.2"
-          />
-          <ellipse cx="138" cy="126" rx="3.5" ry="2" fill="#ffd166" />
-          <circle cx="142" cy="128" r="4" fill="url(#chitiSkinGrad)" />
+        {/* 🖐️ Right Plush Arm (Holding Rakhi Heart) */}
+        <g className="teddy-part-arm-r">
+          <ellipse cx="136" cy="120" rx="11" ry="18" fill="url(#teddyFurGrad)" stroke="#78350f" strokeWidth="1.2" transform="rotate(-25, 136, 120)" />
+          <ellipse cx="140" cy="116" rx="5" ry="6" fill="url(#teddySnoutGrad)" />
+          {/* Rakhi Band on Wrist */}
+          <rect x="133" y="126" width="10" height="3" rx="1" fill="#ffd166" stroke="#ff3366" strokeWidth="0.8" />
+          <circle cx="138" cy="127.5" r="2" fill="#ff3366" />
         </g>
 
-        {/* 🌸 Chibi Head, Bouncy Twin Buns & Expressive Face */}
-        <g className="chiti-part-head">
-          <g className="chiti-part-bun-l">
-            <circle cx="58" cy="50" r="16" fill="url(#chitiHairGrad)" stroke="#ff758c" strokeWidth="1.5" />
-            <path d="M58,56 L46,64 L54,54 L44,48 L58,54 Z" fill="url(#chitiRibbonGrad)" />
-            <circle cx="58" cy="54" r="3.5" fill="#ff3366" />
+        {/* 🎀 Golden Rakhi Neck Ribbon Bow */}
+        <g className="teddy-part-bow" transform="translate(100, 102)">
+          <path d="M0,0 L-14,-7 L-14,7 Z" fill="url(#teddyBowGrad)" stroke="#ffd166" strokeWidth="1" />
+          <path d="M0,0 L14,-7 L14,7 Z" fill="url(#teddyBowGrad)" stroke="#ffd166" strokeWidth="1" />
+          <circle cx="0" cy="0" r="4.5" fill="#ffd166" stroke="#ff3366" strokeWidth="1" />
+          <circle cx="0" cy="0" r="2" fill="#ff3366" />
+        </g>
+
+        {/* 🧸 Round Plush Head, Fuzzy Ears & Sweet Expression */}
+        <g className="teddy-part-head">
+          {/* Left Ear */}
+          <g className="teddy-ear-l">
+            <circle cx="66" cy="52" r="16" fill="url(#teddyFurGrad)" stroke="#78350f" strokeWidth="1.2" />
+            <circle cx="66" cy="52" r="9" fill="url(#teddySnoutGrad)" />
           </g>
 
-          <g className="chiti-part-bun-r">
-            <circle cx="142" cy="50" r="16" fill="url(#chitiHairGrad)" stroke="#ff758c" strokeWidth="1.5" />
-            <path d="M142,56 L154,64 L146,54 L156,48 L142,54 Z" fill="url(#chitiRibbonGrad)" />
-            <circle cx="142" cy="54" r="3.5" fill="#ff3366" />
+          {/* Right Ear */}
+          <g className="teddy-ear-r">
+            <circle cx="134" cy="52" r="16" fill="url(#teddyFurGrad)" stroke="#78350f" strokeWidth="1.2" />
+            <circle cx="134" cy="52" r="9" fill="url(#teddySnoutGrad)" />
           </g>
 
-          <ellipse cx="100" cy="68" rx="38" ry="34" fill="url(#chitiHairGrad)" />
-          <ellipse cx="100" cy="72" rx="30" ry="26" fill="url(#chitiSkinGrad)" />
+          {/* Head Base */}
+          <ellipse cx="100" cy="68" rx="36" ry="32" fill="url(#teddyFurGrad)" stroke="#78350f" strokeWidth="1.2" />
 
-          <path
-            d="M70,64 Q80,50 100,50 Q120,50 130,64 Q118,58 100,58 Q82,58 70,64 Z"
-            fill="url(#chitiHairGrad)"
-          />
-          <path d="M84,54 Q88,68 94,62" fill="none" stroke="#2e1065" strokeWidth="1.5" />
-          <path d="M116,54 Q112,68 106,62" fill="none" stroke="#2e1065" strokeWidth="1.5" />
+          {/* Soft Snout Base */}
+          <ellipse cx="100" cy="76" rx="16" ry="12" fill="url(#teddySnoutGrad)" stroke="#d97706" strokeWidth="1" />
 
-          <ellipse cx="78" cy="78" rx="7" ry="4.5" fill="#ff758c" opacity="0.6" />
-          <ellipse cx="122" cy="78" rx="7" ry="4.5" fill="#ff758c" opacity="0.6" />
+          {/* Button Nose & Stitched Smile */}
+          <ellipse cx="100" cy="71" rx="5.5" ry="4" fill="#3b1506" />
+          <circle cx="98.5" cy="70" r="1" fill="#ffffff" />
+          <line x1="100" y1="75" x2="100" y2="79" stroke="#3b1506" strokeWidth="1.6" strokeLinecap="round" />
+          <path d="M94,79 Q100,85 106,79" fill="none" stroke="#3b1506" strokeWidth="1.8" strokeLinecap="round" />
 
-          <g className="chiti-part-eyes">
-            <ellipse cx="85" cy="68" rx="6.5" ry="8.5" fill="#2d0c1c" />
-            <circle cx="83" cy="65" r="2.8" fill="#ffffff" />
-            <circle cx="87" cy="72" r="1.2" fill="#ff9a9e" />
-            <path d="M78,68 Q85,58 92,68 Z" fill="#ffe4e6" className="chiti-eyelid-anim" />
+          {/* Rosy Blush */}
+          <ellipse cx="74" cy="75" rx="6" ry="3.5" fill="#f43f5e" opacity="0.6" />
+          <ellipse cx="126" cy="75" rx="6" ry="3.5" fill="#f43f5e" opacity="0.6" />
 
-            <ellipse cx="115" cy="68" rx="6.5" ry="8.5" fill="#2d0c1c" />
-            <circle cx="113" cy="65" r="2.8" fill="#ffffff" />
-            <circle cx="117" cy="72" r="1.2" fill="#ff9a9e" />
-            <path d="M108,68 Q115,58 122,68 Z" fill="#ffe4e6" className="chiti-eyelid-anim" />
+          {/* Big Starry Catchlight Eyes */}
+          <g className="teddy-eyes">
+            <circle cx="84" cy="64" r="5.5" fill="#291206" />
+            <circle cx="82" cy="62" r="2.2" fill="#ffffff" />
+            <circle cx="85.5" cy="65.5" r="1" fill="#ffffff" />
+
+            <circle cx="116" cy="64" r="5.5" fill="#291206" />
+            <circle cx="114" cy="62" r="2.2" fill="#ffffff" />
+            <circle cx="117.5" cy="65.5" r="1" fill="#ffffff" />
           </g>
 
-          <path
-            d="M94,80 Q100,88 106,80"
-            fill="none"
-            stroke="#2d0c1c"
-            strokeWidth="2.2"
-            strokeLinecap="round"
-          />
-          <path d="M96,81 Q100,87 104,81 Z" fill="#ff3366" className="chiti-open-smile" />
-
-          <g transform="translate(74, 46)">
+          {/* Sibling Blossom Clip on Ear */}
+          <g transform="translate(62, 38)">
             <circle cx="0" cy="0" r="3.5" fill="#ffd166" />
-            <circle cx="-5" cy="0" r="3" fill="#ff758c" opacity="0.85" />
-            <circle cx="5" cy="0" r="3" fill="#ff758c" opacity="0.85" />
-            <circle cx="0" cy="-5" r="3" fill="#ff758c" opacity="0.85" />
-            <circle cx="0" cy="5" r="3" fill="#ff758c" opacity="0.85" />
+            <circle cx="-3" cy="0" r="2.5" fill="#ff758c" opacity="0.9" />
+            <circle cx="3" cy="0" r="2.5" fill="#ff758c" opacity="0.9" />
+            <circle cx="0" cy="-3" r="2.5" fill="#ff758c" opacity="0.9" />
+            <circle cx="0" cy="3" r="2.5" fill="#ff758c" opacity="0.9" />
           </g>
         </g>
       </svg>

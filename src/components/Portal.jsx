@@ -29,7 +29,7 @@ export default function Portal({ onLoginSuccess }) {
     const thanishqaExact = [
       'thanishqa', 'thanishka', 'tanishqa', 'tanishka',
       'thanish', 'tanish', 'thani', 'tani',
-      'white peacock', 'peacock', 'peaky'
+      'white peacock', 'peacock', 'peacoc', 'peaky'
     ];
     if (thanishqaExact.includes(q)) {
       return RECIPIENTS.peacock;
@@ -129,9 +129,11 @@ export default function Portal({ onLoginSuccess }) {
     let isMatch = false;
     if (trimmed === selectedRecipient.password.toLowerCase()) {
       isMatch = true;
+    } else if (selectedRecipient.id === 'peacock' && (trimmed === 'peacock' || trimmed === 'white peacock' || trimmed === 'whitepeacock' || trimmed === 'peacoc')) {
+      isMatch = true;
     } else if (selectedRecipient.id === 'chiti' && (trimmed === 'brother' || trimmed === 'chits')) {
       isMatch = true;
-    } else if (selectedRecipient.id === 'hanvika' && (trimmed === 'bunny' || trimmed === 'rabbit' || trimmed === 'carrot')) {
+    } else if (selectedRecipient.id === 'hanvika' && (trimmed === 'brother' || trimmed === 'bunny' || trimmed === 'rabbit' || trimmed === 'carrot')) {
       isMatch = true;
     }
 

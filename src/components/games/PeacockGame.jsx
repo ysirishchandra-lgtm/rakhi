@@ -1,384 +1,472 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { Crown, Sparkles, Trophy, Play, RotateCcw, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, CheckCircle2, Diamond, X } from 'lucide-react';
+import { Crown, Sparkles, Trophy, Play, RotateCcw, ArrowLeft, ArrowRight, CheckCircle2, Flame, Heart, X, Star, Zap, Diamond } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { soundFx } from '../../services/soundEffects';
 
-// 5 Chamber Maps:
-// 0: Open, 1: Crystal Wall, 'F': Feather, 'J': Jewel, 'S': Switch, 'E': Exit Portal
-const CHAMBER_1 = [
-  [0, 0, 'F', 1, 'J'],
-  [1, 0, 1, 0, 0],
-  ['F', 0, 'E', 0, 1],
-  [0, 1, 0, 1, 0],
-  ['J', 0, 0, 0, 0]
-];
-
-const CHAMBER_2 = [
-  [0, 'S', 1, 'F', 0],
-  [0, 1, 1, 0, 'J'],
-  [0, 0, 0, 1, 'E'],
-  [1, 1, 0, 0, 0],
-  ['J', 0, 'F', 1, 0]
-];
-
-const CHAMBER_3 = [
-  [0, 0, 1, 'J', 'F'],
-  [1, 0, 0, 0, 1],
-  ['F', 1, 'E', 0, 0],
-  [0, 0, 1, 1, 0],
-  ['J', 0, 0, 'F', 0]
-];
-
-const CHAMBER_4 = [
-  [0, 'F', 1, 'F', 0],
-  [0, 1, 0, 1, 'J'],
-  ['F', 0, 'E', 0, 'F'],
-  [1, 0, 1, 0, 1],
-  ['J', 0, 'F', 0, 0]
-];
-
-const CHAMBER_5 = [
-  [0, 0, 'J', 1, 0, 'F', 0],
-  [0, 1, 0, 0, 0, 1, 0],
-  ['J', 0, 1, 1, 0, 0, 'J'],
-  [1, 0, 0, 'E', 0, 1, 1],
-  ['F', 1, 0, 1, 0, 0, 'F'],
-  [0, 0, 0, 0, 1, 0, 0],
-  ['J', 0, 'F', 0, 0, 'F', 0]
-];
-
 export default function PeacockGame({ recipient, onComplete }) {
-  // Chamber Levels: 0: Intro, 1: Emerald Garden, 2: Crystal Hall, 3: Mirror Chamber, 4: Feather Temple, 5: Royal Vault, 6: Victory
-  const [chamber, setChamber] = useState(0);
-  const [playerPos, setPlayerPos] = useState({ r: 0, c: 0 });
+  // Stages: 0: Intro, 1: Celestial Plume Catch, 2: Prism Flight Rush, 3: Moonstone Crown Awakening, 4: Victory
+  const [stage, setStage] = useState(0);
   const [score, setScore] = useState(0);
-  const [feathers, setFeathers] = useState(0);
-  const [jewels, setJewels] = useState(0);
-  const [collectedInChamber, setCollectedInChamber] = useState(new Set());
-  const [steps, setSteps] = useState(0);
-  const [switchActive, setSwitchActive] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
+  const [combo, setCombo] = useState(0);
+  const [scorePopups, setScorePopups] = useState([]);
 
-  const currentMap =
-    chamber === 1
-      ? CHAMBER_1
-      : chamber === 2
-      ? CHAMBER_2
-      : chamber === 3
-      ? CHAMBER_3
-      : chamber === 4
-      ? CHAMBER_4
-      : chamber === 5
-      ? CHAMBER_5
-      : CHAMBER_1;
+  // Stage 1 & 2: Plume Catcher Steering State
+  const [peacockX, setPeacockX] = useState(50); // percentage (0 - 100)
+  const [plumes, setPlumes] = useState([]);
+  const [plumesCaught, setPlumesCaught] = useState(0);
+  const stage1Target = 10;
+  const stage2Target = 12;
+  const stageLoopRef = useRef(null);
+  const stageSpawnRef = useRef(null);
 
-  const startLabyrinth = () => {
+  // Stage 3: Celestial Moonstone Crown Awakening Boss State
+  const [crownHp, setCrownHp] = useState(100);
+  const [crownShaking, setCrownShaking] = useState(false);
+  const [crownHits, setCrownHits] = useState(0);
+
+  // Helper: Trigger floating score popup
+  const addScorePopup = (text, x = 50, y = 50, color = '#38bdf8') => {
+    const id = Date.now() + Math.random();
+    setScorePopups((prev) => [...prev.slice(-6), { id, text, x, y, color }]);
+    setTimeout(() => {
+      setScorePopups((prev) => prev.filter((p) => p.id !== id));
+    }, 900);
+  };
+
+  const startQuest = () => {
     soundFx.playClick();
     setScore(0);
-    setFeathers(0);
-    setJewels(0);
-    setSteps(0);
-    startChamber1();
+    setCombo(0);
+    startStage1();
   };
 
   const exitGame = () => {
     soundFx.playClick();
-    setChamber(0);
+    setStage(0);
+    clearInterval(stageLoopRef.current);
+    clearInterval(stageSpawnRef.current);
   };
 
-  const startChamber1 = () => {
-    setChamber(1);
-    setPlayerPos({ r: 0, c: 0 });
-    setCollectedInChamber(new Set());
-    setToastMsg('Chamber 1: Emerald Garden. Collect 🪶 Plumes & navigate to the Crown Vault 👑!');
+  // Keyboard navigation for desktop
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (stage !== 1 && stage !== 2) return;
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+        setPeacockX((x) => Math.max(12, x - 12));
+      } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+        setPeacockX((x) => Math.min(88, x + 12));
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [stage]);
+
+  // ----------------------------------------------------
+  // STAGE 1: CELESTIAL PLUME CATCH
+  // ----------------------------------------------------
+  const startStage1 = () => {
+    setStage(1);
+    setPlumes([]);
+    setPlumesCaught(0);
+    setCombo(0);
+    setToastMsg('Catch 10 sacred white plumes & pearls! Steer White Peacock left/right!');
     soundFx.playLevelUp();
+
+    // Spawner
+    stageSpawnRef.current = setInterval(() => {
+      const types = [
+        { icon: '🪶', pts: 50, speed: 1.6, label: '+50 PLUME!' },
+        { icon: '💎', pts: 80, speed: 1.4, label: '+80 CRYSTAL!' },
+        { icon: '⚪', pts: 40, speed: 1.8, label: '+40 PEARL' },
+        { icon: '✨', pts: 100, speed: 2.0, label: 'GOLDEN SPARKLE!' }
+      ];
+      const selected = types[Math.floor(Math.random() * types.length)];
+      const newPlume = {
+        id: Math.random(),
+        x: Math.random() * 76 + 12,
+        y: 0,
+        ...selected
+      };
+      setPlumes((prev) => [...prev.slice(-8), newPlume]);
+    }, 1050);
+
+    // Physics Loop
+    stageLoopRef.current = setInterval(() => {
+      setPlumes((prev) => {
+        const nextList = [];
+        for (const p of prev) {
+          const nextY = p.y + p.speed * 2.2;
+          // Check collision with White Peacock at bottom (y around 78-92%)
+          if (nextY >= 76 && nextY <= 92 && Math.abs(p.x - peacockX) < 16) {
+            // Caught!
+            soundFx.playScorePoint();
+            setScore((s) => s + p.pts);
+            setPlumesCaught((c) => {
+              const nextCount = c + 1;
+              if (nextCount >= stage1Target) {
+                setTimeout(startStage2, 450);
+              }
+              return nextCount;
+            });
+            setCombo((cb) => {
+              const newCb = cb + 1;
+              if (newCb > 1) {
+                soundFx.playComboStreak(newCb);
+                addScorePopup(`PLUME STREAK x${newCb}!`, p.x, 78, '#38bdf8');
+              } else {
+                addScorePopup(p.label, p.x, 78, '#ffffff');
+              }
+              return newCb;
+            });
+          } else if (nextY < 100) {
+            nextList.push({ ...p, y: nextY });
+          }
+        }
+        return nextList;
+      });
+    }, 45);
   };
 
-  const startChamber2 = () => {
-    setChamber(2);
-    setPlayerPos({ r: 0, c: 0 });
-    setCollectedInChamber(new Set());
-    setSwitchActive(false);
-    setToastMsg('Chamber 2: Crystal Hall. Step on the Switch 🔘 to unlock the Exit!');
+  // ----------------------------------------------------
+  // STAGE 2: PRISM FLIGHT RUSH
+  // ----------------------------------------------------
+  const startStage2 = () => {
+    clearInterval(stageLoopRef.current);
+    clearInterval(stageSpawnRef.current);
+
+    setStage(2);
+    setPlumes([]);
+    setPlumesCaught(0);
+    setCombo(0);
+    setToastMsg('⚡ Stage 2: Prism Flight Rush! Fast falling sapphire diamonds & celestial feathers!');
     soundFx.playLevelUp();
+
+    stageSpawnRef.current = setInterval(() => {
+      const types = [
+        { icon: '🪶', pts: 70, speed: 2.1, label: '+70 PLUME' },
+        { icon: '💎', pts: 120, speed: 2.4, label: '+120 SAPPHIRE!' },
+        { icon: '👑', pts: 150, speed: 2.6, label: 'ROYAL CROWN!' },
+        { icon: '🌟', pts: 90, speed: 2.2, label: '+90 STAR' }
+      ];
+      const selected = types[Math.floor(Math.random() * types.length)];
+      const newPlume = {
+        id: Math.random(),
+        x: Math.random() * 76 + 12,
+        y: 0,
+        ...selected
+      };
+      setPlumes((prev) => [...prev.slice(-9), newPlume]);
+    }, 850);
+
+    stageLoopRef.current = setInterval(() => {
+      setPlumes((prev) => {
+        const nextList = [];
+        for (const p of prev) {
+          const nextY = p.y + p.speed * 2.5;
+          if (nextY >= 76 && nextY <= 92 && Math.abs(p.x - peacockX) < 16) {
+            soundFx.playScorePoint();
+            setScore((s) => s + p.pts);
+            setPlumesCaught((c) => {
+              const nextCount = c + 1;
+              if (nextCount >= stage2Target) {
+                setTimeout(startStage3, 500);
+              }
+              return nextCount;
+            });
+            setCombo((cb) => {
+              const newCb = cb + 1;
+              if (newCb > 1) {
+                soundFx.playComboStreak(newCb);
+                addScorePopup(`PRISM COMBO x${newCb}!`, p.x, 78, '#fde047');
+              } else {
+                addScorePopup(p.label, p.x, 78, '#38bdf8');
+              }
+              return newCb;
+            });
+          } else if (nextY < 100) {
+            nextList.push({ ...p, y: nextY });
+          }
+        }
+        return nextList;
+      });
+    }, 40);
   };
 
-  const startChamber3 = () => {
-    setChamber(3);
-    setPlayerPos({ r: 0, c: 0 });
-    setCollectedInChamber(new Set());
-    setToastMsg('Chamber 3: Mirror Chamber. Gather sparkling Jewels 💎 for bonus score!');
-    soundFx.playLevelUp();
-  };
+  // ----------------------------------------------------
+  // STAGE 3: CELESTIAL MOONSTONE CROWN AWAKENING
+  // ----------------------------------------------------
+  const startStage3 = () => {
+    clearInterval(stageLoopRef.current);
+    clearInterval(stageSpawnRef.current);
 
-  const startChamber4 = () => {
-    setChamber(4);
-    setPlayerPos({ r: 0, c: 0 });
-    setCollectedInChamber(new Set());
-    setToastMsg('Chamber 4: Feather Temple. Labyrinth paths are narrower!');
-    soundFx.playLevelUp();
-  };
-
-  const startChamber5 = () => {
-    setChamber(5);
-    setPlayerPos({ r: 0, c: 0 });
-    setCollectedInChamber(new Set());
-    setToastMsg('👑 CHAMBER 5: ROYAL VAULT! 7x7 grand maze to uncover the Royal Crown!');
+    setStage(3);
+    setCrownHp(100);
+    setCrownHits(0);
+    setToastMsg('👑 FINAL STAGE: CELESTIAL MOONSTONE PRISM! Tap rapidly to awaken the White Peacock Crown & unseal the Vault!');
     soundFx.playBossAlert();
   };
 
-  // Keyboard navigation
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (chamber < 1 || chamber > 5) return;
-      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') move(0, -1);
-      else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') move(0, 1);
-      else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') move(-1, 0);
-      else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') move(1, 0);
-    };
+  const handleCrownTap = (e) => {
+    if (crownHp <= 0) return;
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [chamber, playerPos, collectedInChamber, switchActive]);
+    soundFx.playBossHit();
+    setCrownShaking(true);
+    setTimeout(() => setCrownShaking(false), 120);
 
-  const move = (dx, dy) => {
-    const nextR = playerPos.r + dy;
-    const nextC = playerPos.c + dx;
+    const dmg = 8;
+    const nextHp = Math.max(0, crownHp - dmg);
+    setCrownHp(nextHp);
+    setCrownHits((h) => h + 1);
+    setScore((s) => s + 50);
 
-    const rows = currentMap.length;
-    const cols = currentMap[0].length;
+    const rect = e?.currentTarget?.getBoundingClientRect();
+    const x = rect ? ((e.clientX - rect.left) / rect.width) * 100 : 50;
+    addScorePopup('✨ RADIANCE BURST! +50', x || 50, 45, '#38bdf8');
 
-    if (nextR < 0 || nextR >= rows || nextC < 0 || nextC >= cols) return;
-
-    const targetCell = currentMap[nextR][nextC];
-
-    // Wall collision
-    if (targetCell === 1) {
-      soundFx.playNegative();
-      return;
-    }
-
-    // Switch requirement for chamber 2
-    if (chamber === 2 && targetCell === 'E' && !switchActive) {
-      soundFx.playNegative();
-      setToastMsg('🔒 Crown Vault locked! Step on the switch 🔘 first!');
-      return;
-    }
-
-    soundFx.playStep();
-    setSteps((s) => s + 1);
-    setPlayerPos({ r: nextR, c: nextC });
-
-    const cellKey = `${nextR}-${nextC}`;
-    if (!collectedInChamber.has(cellKey)) {
-      if (targetCell === 'F') {
-        soundFx.playCatch();
-        setFeathers((f) => f + 1);
-        setScore((s) => s + 25);
-        setCollectedInChamber((prev) => new Set([...prev, cellKey]));
-        setToastMsg('🪶 Sacred Plume Collected! +25 pts');
-      } else if (targetCell === 'J') {
-        soundFx.playGoldenCatch();
-        setJewels((j) => j + 1);
-        setScore((s) => s + 50);
-        setCollectedInChamber((prev) => new Set([...prev, cellKey]));
-        setToastMsg('💎 Crystal Jewel Discovered! +50 pts');
-      } else if (targetCell === 'S') {
-        soundFx.playLevelUp();
-        setSwitchActive(true);
-        setCollectedInChamber((prev) => new Set([...prev, cellKey]));
-        setToastMsg('🔘 Crystal Switch Activated! Exit Unlocked!');
-      }
-    }
-
-    // Exit portal reach
-    if (targetCell === 'E') {
-      soundFx.playLevelUp();
-      if (chamber === 1) startChamber2();
-      else if (chamber === 2) startChamber3();
-      else if (chamber === 3) startChamber4();
-      else if (chamber === 4) startChamber5();
-      else if (chamber === 5) triggerVictory();
+    if (nextHp <= 0) {
+      triggerVictory();
     }
   };
 
+  // ----------------------------------------------------
+  // STAGE 4: VICTORY CEREMONY
+  // ----------------------------------------------------
   const triggerVictory = () => {
-    setChamber(6);
+    setStage(4);
+    clearInterval(stageLoopRef.current);
+    clearInterval(stageSpawnRef.current);
     soundFx.playGameWin();
+
     confetti({
-      particleCount: 150,
-      spread: 90,
+      particleCount: 160,
+      spread: 95,
       origin: { y: 0.55 },
-      colors: ['#10b981', '#38bdf8', '#ffd166', '#ffffff']
+      colors: ['#38bdf8', '#10b981', '#ffffff', '#fde047', '#67e8f9']
     });
+
     if (onComplete) {
-      onComplete(score + 250);
+      onComplete(score + 650);
     }
   };
 
   return (
     <>
-      <div className="peacock-game-card">
-        <div className="game-intro-view">
-          <div className="game-badge-chip peacock-badge">
-            <Crown size={16} />
-            <span>Mystery Labyrinth</span>
+      {/* Mini-game Card Teaser in Main View */}
+      <div className="mini-game-card game-peacock animate-pop">
+        <div className="game-card-header">
+          <div className="game-badge-chip peacock-chip">
+            <Crown size={15} />
+            <span>Thanishqa's Level 3 Quest</span>
           </div>
-
-          <h3 className="game-main-title">Royal Feather Labyrinth 🦚✨</h3>
-          <p className="game-intro-desc">
-            Explore 5 celestial chambers, gather sacred peacock plumes, and unseal the Imperial Crown Vault to win the <strong>Royal Trophy</strong>!
-          </p>
-
-          <button
-            id="btn-start-peacock-quest"
-            type="button"
-            className="btn-game-primary peacock-theme-btn"
-            onClick={startLabyrinth}
-          >
-            <Sparkles size={20} />
-            <span>{score > 0 ? 'Replay Labyrinth 🦚' : 'Enter the Labyrinth 🦚'}</span>
-          </button>
+          <span className="game-level-tag">3 Exciting Stages</span>
         </div>
+
+        <h3 className="game-card-title">White Peacock Sanctuary & Plume Quest! 🦚✨</h3>
+        <p className="game-card-desc">
+          Steer the graceful White Peacock across celestial skies, gather glowing sacred plumes & sapphires, and awaken the Imperial Moonstone Crown!
+        </p>
+
+        <button
+          id="btn-start-peacock-game"
+          type="button"
+          className="btn-game-primary peacock-theme-btn"
+          onClick={startQuest}
+        >
+          <Play size={18} />
+          <span>{score > 0 ? 'Replay Peacock Quest 🦚' : 'Start Plume Quest 🦚'}</span>
+        </button>
       </div>
 
       {/* Full-Screen Immersive Game Modal Overlay */}
-      {chamber >= 1 &&
+      {stage >= 1 &&
         createPortal(
           <div className="modal-backdrop" onClick={exitGame}>
-            <div className="game-modal-card animate-pop" onClick={(e) => e.stopPropagation()}>
-              <button className="btn-modal-x" onClick={exitGame} aria-label="Close labyrinth">
+            <div className="game-modal-card peacock-modal animate-pop" onClick={(e) => e.stopPropagation()}>
+              <button className="btn-modal-x" onClick={exitGame} aria-label="Exit Game">
                 <X size={20} />
               </button>
 
-              {/* HUD (Chambers 1-5) */}
-              {chamber >= 1 && chamber <= 5 && (
-                <div className="maze-hud">
-                  <div className="hud-pill feather-pill">
-                    <span>🪶 Plumes: <strong>{feathers}</strong></span>
-                  </div>
-
-                  <div className="hud-pill jewel-pill">
-                    <Diamond size={14} />
-                    <span>Jewels: <strong>{jewels}</strong></span>
-                  </div>
-
-                  <div className="hud-pill stage-pill">
-                    <span>Chamber {chamber}/5: {getChamberTitle(chamber)}</span>
-                  </div>
-
-                  <div className="hud-pill steps-pill">
-                    <span>Steps: <strong>{steps}</strong></span>
-                  </div>
+              {/* HUD Banner */}
+              <div className="game-hud-bar">
+                <div className="hud-pill score-pill">
+                  <Trophy size={14} className="hud-icon-gold" />
+                  <span>Score: <strong>{score}</strong></span>
                 </div>
-              )}
 
-              {/* Toast */}
+                <div className="hud-pill stage-pill">
+                  <Crown size={14} />
+                  <span>Stage {stage}/3</span>
+                </div>
+
+                {stage <= 2 && (
+                  <div className="hud-pill progress-pill">
+                    <span>Plumes: <strong>{plumesCaught}/{stage === 1 ? stage1Target : stage2Target}</strong></span>
+                  </div>
+                )}
+
+                {combo > 1 && (
+                  <div className="hud-pill combo-pill animate-bounce">
+                    <Flame size={14} />
+                    <span>{combo}x Streak!</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Floating Score Popups */}
+              <div className="floating-popups-layer">
+                {scorePopups.map((p) => (
+                  <span
+                    key={p.id}
+                    className="score-popup-item animate-score-float"
+                    style={{ left: `${p.x}%`, top: `${p.y}%`, color: p.color }}
+                  >
+                    {p.text}
+                  </span>
+                ))}
+              </div>
+
+              {/* Toast Messages */}
               {toastMsg && (
-                <div className="maze-toast-bubble animate-pop">
+                <div className="game-toast-banner animate-pop">
                   <span>{toastMsg}</span>
                 </div>
               )}
 
               {/* ----------------------------------------------------
-                  CHAMBERS 1 - 5: ACTIVE MAZE GRID
+                  STAGES 1 & 2: CELESTIAL PLUME CATCHER SKY
                  ---------------------------------------------------- */}
-              {chamber >= 1 && chamber <= 5 && (
-                <div className="peacock-maze-stage">
-                  <div className="maze-grid-container" style={{ maxWidth: chamber === 5 ? '360px' : '300px' }}>
-                    {currentMap.map((row, r) => (
-                      <div key={r} className="maze-grid-row">
-                        {row.map((cell, c) => {
-                          const isPlayerHere = playerPos.r === r && playerPos.c === c;
-                          const isWall = cell === 1;
-                          const isExit = cell === 'E';
-                          const cellKey = `${r}-${c}`;
-                          const isCollected = collectedInChamber.has(cellKey);
+              {(stage === 1 || stage === 2) && (
+                <div className="plume-catcher-stage celestial-sky-bg">
+                  {/* Sky Clouds & Stars */}
+                  <div className="sky-cloud cloud-1">☁️</div>
+                  <div className="sky-cloud cloud-2">✨</div>
+                  <div className="sky-cloud cloud-3">☁️</div>
 
-                          return (
-                            <div
-                              key={c}
-                              className={`maze-cell ${isWall ? 'cell-wall' : 'cell-path'} ${isExit ? 'cell-exit' : ''} ${isPlayerHere ? 'cell-player' : ''}`}
-                            >
-                              {isWall && <span className="wall-crystal">💎</span>}
+                  {/* Falling Plumes, Crystals, Pearls */}
+                  {plumes.map((p) => (
+                    <div
+                      key={p.id}
+                      className="falling-plume-item animate-spin-gentle"
+                      style={{
+                        left: `${p.x}%`,
+                        top: `${p.y}%`
+                      }}
+                    >
+                      <span className="plume-icon">{p.icon}</span>
+                    </div>
+                  ))}
 
-                              {!isWall && !isCollected && cell === 'F' && (
-                                <span className="maze-item feather-item animate-pulse">🪶</span>
-                              )}
-                              {!isWall && !isCollected && cell === 'J' && (
-                                <span className="maze-item jewel-item animate-pulse">💎</span>
-                              )}
-                              {!isWall && !isCollected && cell === 'S' && (
-                                <span className="maze-item switch-item animate-bounce">🔘</span>
-                              )}
-                              {isExit && (
-                                <span className="maze-vault vault-glowing animate-bounce">
-                                  👑
-                                </span>
-                              )}
-
-                              {isPlayerHere && (
-                                <div className="player-peacock-icon animate-pop">
-                                  <span>🦚</span>
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    ))}
+                  {/* Player Basket / White Peacock Sprite */}
+                  <div
+                    className="basket-player-anchor"
+                    style={{
+                      left: `${peacockX}%`,
+                      transform: 'translateX(-50%)',
+                      position: 'absolute',
+                      bottom: '24px'
+                    }}
+                  >
+                    <div className="basket-peacock-sprite animate-bounce">
+                      <span className="basket-emoji">🦚✨</span>
+                    </div>
                   </div>
 
-                  {/* Touch D-Pad */}
-                  <div className="maze-dpad-controls">
-                    <button className="dpad-btn dpad-up" onClick={() => move(0, -1)} aria-label="Up">
-                      <ArrowUp size={22} />
+                  {/* Touch Steering Controls for Mobile */}
+                  <div className="touch-steering-row">
+                    <button
+                      type="button"
+                      className="btn-steer"
+                      onClick={() => setPeacockX((x) => Math.max(12, x - 18))}
+                    >
+                      <ArrowLeft size={20} />
+                      <span>Left</span>
                     </button>
-                    <div className="dpad-mid-row">
-                      <button className="dpad-btn dpad-left" onClick={() => move(-1, 0)} aria-label="Left">
-                        <ArrowLeft size={22} />
-                      </button>
-                      <div className="dpad-center-hub">
-                        <Crown size={16} />
-                      </div>
-                      <button className="dpad-btn dpad-right" onClick={() => move(1, 0)} aria-label="Right">
-                        <ArrowRight size={22} />
-                      </button>
+                    <div className="steering-guide">
+                      <span>Drag or Tap Buttons</span>
                     </div>
-                    <button className="dpad-btn dpad-down" onClick={() => move(0, 1)} aria-label="Down">
-                      <ArrowDown size={22} />
+                    <button
+                      type="button"
+                      className="btn-steer"
+                      onClick={() => setPeacockX((x) => Math.min(88, x + 18))}
+                    >
+                      <span>Right</span>
+                      <ArrowRight size={20} />
                     </button>
                   </div>
                 </div>
               )}
 
               {/* ----------------------------------------------------
-                  CHAMBER 6: GRAND VICTORY SCREEN
+                  STAGE 3: MOONSTONE CROWN AWAKENING BOSS
                  ---------------------------------------------------- */}
-              {chamber === 6 && (
-                <div className="game-completed-view animate-pop">
-                  <div className="trophy-stage">
-                    <Crown size={68} className="crown-gold animate-bounce" />
-                    <div className="trophy-aura peacock-aura" />
+              {stage === 3 && (
+                <div className="moonstone-boss-stage animate-pop">
+                  <div className="boss-header-bar">
+                    <div className="boss-title-tag">
+                      <Diamond size={16} />
+                      <span>Imperial Moonstone Crown Prism</span>
+                    </div>
+                    <div className="boss-hp-bar-frame">
+                      <div
+                        className="boss-hp-fill peacock-hp"
+                        style={{ width: `${crownHp}%` }}
+                      />
+                    </div>
+                    <span className="boss-hp-text">{crownHp}% Seal Remaining</span>
                   </div>
 
-                  <h3 className="completed-title">ROYAL PEACOCK CHAMPION! 🦚👑</h3>
-                  <p className="completed-subtitle">
-                    All 5 celestial chambers deciphered in <strong>{steps} steps</strong>! Final Score: <strong>{score} pts</strong>!
-                  </p>
-
-                  <div className="unlock-banner peacock-unlock">
-                    <CheckCircle2 size={22} className="unlock-icon" />
-                    <div>
-                      <strong>The Secret Rakhi Seal is Ready to Break!</strong>
-                      <p>Proceed below to read your royal letter and unwrap the White Peacock Rakhi 2026 gift box 🎁</p>
+                  <div
+                    className={`moonstone-target-container ${crownShaking ? 'target-shake' : ''}`}
+                    onClick={handleCrownTap}
+                  >
+                    <div className="moonstone-aura-pulse" />
+                    <div className="moonstone-crown-sprite animate-bounce">
+                      <span className="crown-grand-emoji">👑💎🦚</span>
+                    </div>
+                    <div className="tap-burst-prompt">
+                      <Zap size={22} className="icon-zap-pulse" />
+                      <span>TAP RAPIDLY TO AWAKEN!</span>
                     </div>
                   </div>
 
-                  <button className="btn-game-secondary" onClick={exitGame}>
-                    <CheckCircle2 size={16} />
-                    <span>Done & Continue ✨</span>
+                  <div className="boss-subtext">
+                    <span>Hits Landed: <strong>{crownHits}</strong></span>
+                  </div>
+                </div>
+              )}
+
+              {/* ----------------------------------------------------
+                  STAGE 4: GRAND VICTORY SCREEN
+                 ---------------------------------------------------- */}
+              {stage === 4 && (
+                <div className="game-victory-view animate-pop">
+                  <div className="victory-crown-trophy">
+                    <Crown size={72} className="crown-peacock-gold animate-bounce" />
+                    <div className="trophy-aura-ring peacock-ring" />
+                  </div>
+
+                  <h3 className="victory-title">CELESTIAL WHITE PEACOCK CHAMPION! 🦚👑</h3>
+                  <p className="victory-subtitle">
+                    Thanishqa gathered all the sacred plumes, illuminated the crystal prism, and awakened the Imperial Crown with <strong>{score} pts</strong>!
+                  </p>
+
+                  <div className="victory-unlock-card peacock-unlock-card">
+                    <CheckCircle2 size={24} className="unlock-check-icon" />
+                    <div>
+                      <strong>Level 3 Cleared! Secret Rakhi Seal Broken!</strong>
+                      <p>Proceed below to read your royal heartfelt letter and unwrap the White Peacock Rakhi Gift Box 🎁</p>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="btn-victory-done peacock-theme-btn"
+                    onClick={exitGame}
+                  >
+                    <CheckCircle2 size={18} />
+                    <span>Done & Continue Celebration ✨</span>
                   </button>
                 </div>
               )}
@@ -388,15 +476,4 @@ export default function PeacockGame({ recipient, onComplete }) {
         )}
     </>
   );
-}
-
-function getChamberTitle(ch) {
-  switch (ch) {
-    case 1: return 'Emerald Garden 🪶';
-    case 2: return 'Crystal Hall 💎';
-    case 3: return 'Mirror Chamber 🪞';
-    case 4: return 'Feather Temple ✨';
-    case 5: return 'Grand Vault 👑';
-    default: return '';
-  }
 }
