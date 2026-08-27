@@ -1,16 +1,30 @@
-# React + Vite
+# Rakhi 2026 ✨ Secret Gift Portal
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A personalized interactive Raksha Bandhan 2026 web application featuring customized realms, animated mascots, sound profiles, 5-stage progression quests, mini-games, heartfelt letters, and locked gift reveals.
 
-Currently, two official plugins are available:
+## 🌐 Live Production Link
+👉 **[https://rakhi-suprise-gift.vercel.app](https://rakhi-suprise-gift.vercel.app)**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 👥 Personas & Access Credentials
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Recipient | Persona & Mascot | Step 1 Name Search | Secret Password |
+| :--- | :--- | :--- | :--- |
+| **Hanvika** | 🐰 Meadow Rabbit | `Hanvika` / `bunny` / `rabbit` | **`brother`** (also accepts `bunny`, `rabbit`, `carrot`) |
+| **Siri Chaithra** | 🧸 Cuddly Teddy Bear | `Siri Chaithra` / `teddy` / `chiti` | **`teddy`** (also accepts `brother`, `chits`) |
+| **Thanishqa** | 🦚 White Peacock | `Thanishqa` / `peacock` / `white peacock` | **`peacock`** (also accepts `white peacock`, `whitepeacock`) |
+| **Grishma** | 🦆 Duck Pond Captain | `Grishma` / `duck` / `quack` | **`quack`** |
+| **Ashwidha** | 🐱 Midnight Kitten | `Ashwidha` / `cat` / `meow` | **`meow`** |
 
-## Expanding the Oxlint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## 🎮 Interactive Features
+- **Persona Isolation**: Custom color palettes, particle effects, background atmospheres, and synthesized Web Audio sound profiles for every character.
+- **5-Stage Quest Progression**:
+  1. *Hero Greeting & Mascot Dance*
+  2. *Interactive Affection / Action Widget*
+  3. *Custom Mini-Game Quest* (Cat Runner, Duck Pond Mayhem, White Peacock Feathers, Bunny Meadow, Teddy Bear Memory Match)
+  4. *Heartfelt Sibling / Friendship Letter*
+  5. *Secret Gift Box Reveal with Confetti Celebrations*
+- **Strict Verification**: Unrecognized names display a friendly *"no found..be happy"* modal.
