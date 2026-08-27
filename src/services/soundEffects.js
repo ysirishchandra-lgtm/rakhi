@@ -8,6 +8,8 @@ class SoundEngine {
   constructor() {
     this.ctx = null;
     this.muted = false;
+    this.bgmAudio = null;
+    this.bgmPlaying = false;
   }
 
   init() {
@@ -20,6 +22,47 @@ class SoundEngine {
     if (this.ctx && this.ctx.state === 'suspended') {
       this.ctx.resume();
     }
+    this.startBgm();
+  }
+
+  startBgm() {
+    if (this.muted) return;
+    if (!this.bgmAudio) {
+      const candidatePaths = [
+        '/bgm.mp3',
+        '/bgm.mp4',
+        '/WhatsApp Video 2026-08-27 at 11.10.10 PM.mp4',
+        '/music.mp3',
+        '/audio.mp3'
+      ];
+      this.bgmAudio = new Audio();
+      this.bgmAudio.loop = true;
+      this.bgmAudio.volume = 0.55;
+
+      let candidateIdx = 0;
+      const tryCandidate = () => {
+        if (candidateIdx >= candidatePaths.length) return;
+        this.bgmAudio.src = candidatePaths[candidateIdx];
+        this.bgmAudio.play().then(() => {
+          this.bgmPlaying = true;
+        }).catch(() => {
+          candidateIdx++;
+          tryCandidate();
+        });
+      };
+      tryCandidate();
+    } else if (this.bgmAudio.paused && !this.muted) {
+      this.bgmAudio.play().then(() => {
+        this.bgmPlaying = true;
+      }).catch(() => {});
+    }
+  }
+
+  stopBgm() {
+    if (this.bgmAudio) {
+      this.bgmAudio.pause();
+      this.bgmPlaying = false;
+    }
   }
 
   isMuted() {
@@ -28,10 +71,20 @@ class SoundEngine {
 
   setMuted(mute) {
     this.muted = mute;
+    if (this.muted) {
+      this.stopBgm();
+    } else {
+      this.startBgm();
+    }
   }
 
   toggleMute() {
     this.muted = !this.muted;
+    if (this.muted) {
+      this.stopBgm();
+    } else {
+      this.startBgm();
+    }
     return this.muted;
   }
 
@@ -575,6 +628,62 @@ class SoundEngine {
         break;
       }
 
+      case 'nirvika': {
+        // 🦢 Swan: Ethereal Moonlit Water Ripple & Serene Harp Cascade
+        const swanNotes = [
+          { f: 587.33, t: 0, d: 0.25 },    // D5
+          { f: 783.99, t: 0.09, d: 0.28 }, // G5
+          { f: 987.77, t: 0.18, d: 0.30 }, // B5
+          { f: 1174.66, t: 0.27, d: 0.35 },// D6
+          { f: 1567.98, t: 0.36, d: 0.45 } // G6
+        ];
+        swanNotes.forEach((note) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          const t = now + note.t;
+
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(note.f, t);
+          gain.gain.setValueAtTime(0, t);
+          gain.gain.linearRampToValueAtTime(0.16, t + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + note.d * 2.2);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + note.d * 2.2);
+        });
+        break;
+      }
+
+      case 'krishvi': {
+        // 🦋 Butterfly: Fluttering high arpeggio & sparkling flower bell
+        const flutterNotes = [
+          { f: 783.99, t: 0, d: 0.12 },     // G5
+          { f: 1046.50, t: 0.06, d: 0.12 }, // C6
+          { f: 1318.51, t: 0.12, d: 0.14 }, // E6
+          { f: 1567.98, t: 0.18, d: 0.16 }, // G6
+          { f: 2093.00, t: 0.24, d: 0.35 }  // C7
+        ];
+        flutterNotes.forEach((note) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          const t = now + note.t;
+
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(note.f, t);
+          gain.gain.setValueAtTime(0, t);
+          gain.gain.linearRampToValueAtTime(0.18, t + 0.015);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + note.d * 1.8);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + note.d * 1.8);
+        });
+        break;
+      }
+
       default:
         this.playClick();
     }
@@ -804,13 +913,261 @@ class SoundEngine {
         break;
       }
 
+      case 'nirvika': {
+        // 🦢 Nirvika: Ethereal moonlit waltz & crystal harp cascade
+        const swanDanceMelody = [
+          { f: 587.33, d: 0.16 }, // D5
+          { f: 783.99, d: 0.16 }, // G5
+          { f: 880.00, d: 0.16 }, // A5
+          { f: 1174.66, d: 0.22 },// D6
+          { f: 1318.51, d: 0.18 },// E6
+          { f: 1567.98, d: 0.25 },// G6
+          { f: 1760.00, d: 0.40 } // A6
+        ];
+
+        let elapsed = 0;
+        swanDanceMelody.forEach((note) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          const t = now + elapsed;
+
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(note.f, t);
+          gain.gain.setValueAtTime(0, t);
+          gain.gain.linearRampToValueAtTime(0.2, t + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + note.d * 2.4);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + note.d * 2.4);
+
+          elapsed += note.d;
+        });
+
+        // Water droplet shimmers
+        [1975.53, 2349.32, 3135.96].forEach((f, idx) => {
+          const wOsc = this.ctx.createOscillator();
+          const wGain = this.ctx.createGain();
+          const wt = now + elapsed + idx * 0.08;
+          wOsc.type = 'triangle';
+          wOsc.frequency.setValueAtTime(f, wt);
+          wGain.gain.setValueAtTime(0.1, wt);
+          wGain.gain.exponentialRampToValueAtTime(0.001, wt + 0.35);
+          wOsc.connect(wGain);
+          wGain.connect(this.ctx.destination);
+          wOsc.start(wt);
+          wOsc.stop(wt + 0.35);
+        });
+        break;
+      }
+
+      case 'krishvi': {
+        // 🦋 Krishvi: Joyful butterfly flight & blooming garden xylophone
+        const butterflyDance = [
+          { f: 659.25, d: 0.10 }, // E5
+          { f: 783.99, d: 0.10 }, // G5
+          { f: 987.77, d: 0.10 }, // B5
+          { f: 1318.51, d: 0.16 },// E6
+          { f: 1567.98, d: 0.12 },// G6
+          { f: 1760.00, d: 0.14 },// A6
+          { f: 2093.00, d: 0.35 } // C7
+        ];
+
+        let elapsed = 0;
+        butterflyDance.forEach((note) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          const t = now + elapsed;
+
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(note.f, t);
+          gain.gain.setValueAtTime(0, t);
+          gain.gain.linearRampToValueAtTime(0.22, t + 0.015);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + note.d * 2.0);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + note.d * 2.0);
+
+          elapsed += note.d;
+        });
+
+        // Flutter overtone sparkle
+        [2637.00, 3135.96, 3520.00].forEach((f, idx) => {
+          const fOsc = this.ctx.createOscillator();
+          const fGain = this.ctx.createGain();
+          const ft = now + elapsed + idx * 0.06;
+          fOsc.type = 'sine';
+          fOsc.frequency.setValueAtTime(f, ft);
+          fGain.gain.setValueAtTime(0.12, ft);
+          fGain.gain.exponentialRampToValueAtTime(0.001, ft + 0.3);
+          fOsc.connect(fGain);
+          fGain.connect(this.ctx.destination);
+          fOsc.start(ft);
+          fOsc.stop(ft + 0.3);
+        });
+        break;
+      }
+
       default:
         this.playMascot(recipientId);
     }
   }
 
+  // 🎧 DJ Party Electronic Beat & Scratch
+  playDjBeat(recipientId) {
+    if (this.muted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+
+    // Heavy Electronic Bass Kick
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(150, now);
+    osc.frequency.exponentialRampToValueAtTime(30, now + 0.25);
+    gain.gain.setValueAtTime(0.4, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.25);
+
+    // Vinyl Scratch Slide
+    const scratch = this.ctx.createOscillator();
+    const sGain = this.ctx.createGain();
+    scratch.type = 'sawtooth';
+    scratch.frequency.setValueAtTime(300, now + 0.08);
+    scratch.frequency.linearRampToValueAtTime(1200, now + 0.16);
+    scratch.frequency.linearRampToValueAtTime(450, now + 0.24);
+    sGain.gain.setValueAtTime(0.18, now + 0.08);
+    sGain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+    scratch.connect(sGain);
+    sGain.connect(this.ctx.destination);
+    scratch.start(now + 0.08);
+    scratch.stop(now + 0.28);
+
+    // Electronic Lead Synthesizer Riff
+    const notes = [440, 554.37, 659.25, 880, 1108.73];
+    notes.forEach((freq, idx) => {
+      const syn = this.ctx.createOscillator();
+      const sG = this.ctx.createGain();
+      const t = now + 0.15 + idx * 0.07;
+      syn.type = 'square';
+      syn.frequency.setValueAtTime(freq, t);
+      sG.gain.setValueAtTime(0.12, t);
+      sG.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+      syn.connect(sG);
+      sG.connect(this.ctx.destination);
+      syn.start(t);
+      syn.stop(t + 0.15);
+    });
+  }
+
+  // 😂 Laughing & Giggle Bubbles
+  playLaughChime(recipientId) {
+    if (this.muted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+    // Series of playful bubbling squeaks
+    const pitches = [520, 680, 840, 620, 780, 960, 1120, 1340];
+    pitches.forEach((f, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const t = now + idx * 0.07;
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(f, t);
+      osc.frequency.exponentialRampToValueAtTime(f * 1.3, t + 0.05);
+      gain.gain.setValueAtTime(0.18, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.065);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.065);
+    });
+  }
+
+  // 💖 Sibling Love Hug & Warm Chords
+  playHeartHug(recipientId) {
+    if (this.muted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+    // Lush Major 9th chord waltz
+    const chord = [392.00, 493.88, 587.33, 739.99, 880.00, 1174.66];
+    chord.forEach((f, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const t = now + idx * 0.05;
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(f, t);
+      gain.gain.setValueAtTime(0, t);
+      gain.gain.linearRampToValueAtTime(0.15, t + 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.85);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.85);
+    });
+  }
+
+  // 👑 Royal Fanfare Trumpets
+  playRoyalFanfare(recipientId) {
+    if (this.muted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+    // Majestic trumpet motif: C5 -> G5 -> C6 -> E6
+    const trumpet = [
+      { f: 523.25, d: 0.14 },
+      { f: 783.99, d: 0.14 },
+      { f: 1046.50, d: 0.22 },
+      { f: 1318.51, d: 0.50 }
+    ];
+
+    let elapsed = 0;
+    trumpet.forEach((note) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const t = now + elapsed;
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(note.f, t);
+      gain.gain.setValueAtTime(0, t);
+      gain.gain.linearRampToValueAtTime(0.18, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + note.d * 1.5);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(t);
+      osc.stop(t + note.d * 1.5);
+      elapsed += note.d;
+    });
+
+    // Shimmering Golden Glockenspiel
+    [1567.98, 2093.00, 2637.02].forEach((f, idx) => {
+      const gOsc = this.ctx.createOscillator();
+      const gGain = this.ctx.createGain();
+      const gt = now + elapsed + idx * 0.08;
+      gOsc.type = 'triangle';
+      gOsc.frequency.setValueAtTime(f, gt);
+      gGain.gain.setValueAtTime(0.12, gt);
+      gGain.gain.exponentialRampToValueAtTime(0.001, gt + 0.4);
+      gOsc.connect(gGain);
+      gGain.connect(this.ctx.destination);
+      gOsc.start(gt);
+      gOsc.stop(gt + 0.4);
+    });
+  }
+
   playDjDrop(recipientId) {
-    this.playCharacterDanceRhythm(recipientId);
+    this.playDjBeat(recipientId);
   }
 }
 

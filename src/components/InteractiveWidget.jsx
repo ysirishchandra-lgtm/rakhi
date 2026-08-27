@@ -61,6 +61,14 @@ export default function InteractiveWidget({ recipient, onComplete, isCompleted }
       const symbols = ['🥕', '🐰', '🌸', '🍀', '✨', '🎀', '⭐'];
       return symbols[Math.floor(Math.random() * symbols.length)];
     }
+    if (id === 'nirvika') {
+      const symbols = ['🦢', '🪷', '🌙', '💧', '✨', '💎', '🤍'];
+      return symbols[Math.floor(Math.random() * symbols.length)];
+    }
+    if (id === 'krishvi') {
+      const symbols = ['🦋', '🌸', '🌺', '🌿', '✨', '💛', '🌷'];
+      return symbols[Math.floor(Math.random() * symbols.length)];
+    }
     return '✨';
   };
 
@@ -73,6 +81,10 @@ export default function InteractiveWidget({ recipient, onComplete, isCompleted }
       case 'cat':
         return <PawPrint className="widget-icon" />;
       case 'peacock':
+        return <Crown className="widget-icon" />;
+      case 'nirvika':
+        return <Waves className="widget-icon" />;
+      case 'krishvi':
         return <Sparkles className="widget-icon" />;
       default:
         return <Sparkles className="widget-icon" />;

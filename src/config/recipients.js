@@ -157,7 +157,7 @@ export const RECIPIENTS = {
     giftTeaser: {
       title: 'Duck\'s Mystery Rakhi Hamper 🎁',
       badge: 'Rakhi Special',
-      description: 'A customized gift wrapped in pond-aqua wrapping paper with floating bubbles. Complete Duck Pond Mayhem to unlock!',
+      description: 'A customized gift wrapped in pond-aqua wrapping paper with floating bubbles. Unseal your secret letter to unwrap!',
       mysteryClue: 'Clue: Cheeky, yellow, full of fun memories, and guaranteed to make Duck smile! 🦆',
       revealMessage: 'Happy Rakhi 2026, Duck! 🦆 May your year be packed with high scores, zero stress, and endless hilarious adventures!'
     }
@@ -168,49 +168,49 @@ export const RECIPIENTS = {
     name: 'Ashwidha',
     nickname: 'Cat',
     relation: 'College Bestie 🐱',
-    roleTag: 'Queen of Midnight Mischief',
+    roleTag: 'The Snow White Kitten 🐱✨',
     emoji: '🐱',
     mascotEmoji: '🐾',
     password: 'meow',
-    hint: 'What sound does a cute kitty make when asking for love & treats? 🐱',
-    welcomeQuote: '"Cats rule the world, and you rule the mischief. Happy Raksha Bandhan 2026! 🐾✨"',
+    hint: 'What sound does a cute kitty make when asking for love & treats? 🐱 (Try "meow"!)',
+    welcomeQuote: '"Soft like snow, playful like a kitten, and precious like starlight. Happy Raksha Bandhan 2026! 🐾✨"',
     theme: {
-      key: 'cat-night',
-      primary: '#a855f7',
-      primaryRgb: '168, 85, 247',
-      secondary: '#ec4899',
-      secondaryRgb: '236, 72, 153',
-      accent: '#c084fc',
-      accentRgb: '192, 132, 252',
-      bgDark: '#13091e',
-      bgGradient: 'radial-gradient(ellipse at top, #2e1065 0%, #17082c 50%, #090312 100%)',
-      cardBg: 'rgba(39, 14, 75, 0.65)',
-      cardBorder: 'rgba(192, 132, 252, 0.35)',
-      glowColor: 'rgba(168, 85, 247, 0.5)',
-      textPrimary: '#faf5ff',
-      textSecondary: '#e9d5ff',
+      key: 'cat-snow-white',
+      primary: '#f43f5e',
+      primaryRgb: '244, 63, 94',
+      secondary: '#38bdf8',
+      secondaryRgb: '56, 189, 248',
+      accent: '#ffd166',
+      accentRgb: '255, 209, 102',
+      bgDark: '#0e081c',
+      bgGradient: 'radial-gradient(ellipse at 50% 15%, rgba(255, 255, 255, 0.18) 0%, rgba(244, 114, 182, 0.14) 45%, #0d0619 85%)',
+      cardBg: 'rgba(255, 255, 255, 0.09)',
+      cardBorder: 'rgba(255, 255, 255, 0.32)',
+      glowColor: 'rgba(244, 114, 182, 0.55)',
+      textPrimary: '#ffffff',
+      textSecondary: '#fce7f3',
       fontHeading: "'Outfit', sans-serif",
       fontAccent: "'Caveat', cursive",
-      badgeGradient: 'linear-gradient(135deg, #a855f7, #ec4899)',
-      highlightTag: 'Feline Realm 🐾'
+      badgeGradient: 'linear-gradient(135deg, #f43f5e, #ffd166)',
+      highlightTag: 'Snow Angel Kitten Sanctuary 🐾✨'
     },
     particles: {
       type: 'cat',
       shapes: ['paw', 'yarn', 'fish', 'catEye'],
-      colors: ['#a855f7', '#ec4899', '#c084fc', '#f472b6', '#ffffff'],
-      density: 35,
+      colors: ['#ffffff', '#fbcfe8', '#f472b6', '#ffd166', '#38bdf8'],
+      density: 38,
       speed: 0.9
     },
     audioProfile: {
       theme: 'cat',
       mascotSound: 'meowPurr',
       clickSound: 'pawTap',
-      soundTitle: 'Feline Meows & Purrs 🐾'
+      soundTitle: 'Cute Snow Kitty Purrs & Bell Chimes 🐾'
     },
     hero: {
-      title: 'Welcome to Cat\'s Midnight Realm 🐱✨',
-      subtitle: 'Where paws leave glowing trails and yarn balls defy gravity!',
-      mascotName: 'Midnight Cat Ashwidha 🐱',
+      title: 'Welcome to Ashwidha\'s Snow Kitty Realm 🐱✨',
+      subtitle: 'A radiant, pearlescent white paradise of playful paws, glowing yarn, and sweet sibling surprises!',
+      mascotName: 'Snow White Kitty Ashwidha 🐱',
       mascotActionText: 'Tap the kitten to watch the paw dance routine! 🐾💃'
     },
     interactiveWidget: {
@@ -228,16 +228,16 @@ export const RECIPIENTS = {
       ]
     },
     letterPreview: {
-      title: 'A Special Note for Ashwidha (Cat) 📜',
+      title: 'A Special Note for Ashwidha (Snow Kitty) 📜',
       tag: 'From Your Friend',
       teaserText: 'Dear Cat, your chill yet wildly playful vibe makes every hangout and college break unforgettable. Thank you for being such a stellar, loyal, and fun-loving friend who always brings great energy. Wishing you a purr-fect Raksha Bandhan 2026 filled with good vibes and happy moments!',
       signature: 'Stay Purr-fect & Mischievous! 🐾'
     },
     giftTeaser: {
-      title: 'Cat\'s Mystery Midnight Gift 🎁',
+      title: 'Ashwidha\'s Snow Pearl Gift Box 🎁',
       badge: 'Rakhi Special',
-      description: 'A sleek violet surprise box sealed with a silver cat paw charm. Complete Midnight Cat Run to unwrap!',
-      mysteryClue: 'Clue: Soft, stylish, full of feline charm, and midnight sparkle 🐾',
+      description: 'A sleek pearlescent white surprise box sealed with a silver cat paw charm. Unseal your secret letter to unwrap!',
+      mysteryClue: 'Clue: Soft, stylish, full of feline charm, and snow-white sparkle 🐾',
       revealMessage: 'Happy Rakhi 2026, Cat! 🐱 May your days be filled with cozy naps, sweet victories, and infinite fun!'
     }
   },
@@ -250,8 +250,8 @@ export const RECIPIENTS = {
     roleTag: 'The Majestic White Peacock 🦚✨',
     emoji: '🦚',
     mascotEmoji: '🪶',
-    password: 'peacock',
-    hint: 'Think of our graceful, radiant white peacock! 🦚✨ (Try "peacock"!)',
+    password: 'brother',
+    hint: 'Who sent you this special Rakhi surprise? (Try "brother"!)',
     welcomeQuote: '"Spread your radiant wings of grace, shine bright with joy, and cherish every precious moment. Happy Raksha Bandhan 2026! 🦚✨"',
     theme: {
       key: 'peacock-sanctuary',
@@ -315,7 +315,7 @@ export const RECIPIENTS = {
     giftTeaser: {
       title: 'Thanishqa\'s Crystal Peacock Gift Vault 🎁',
       badge: 'Rakhi Special',
-      description: 'An iridescent pearl-white gift box shimmering with sapphire-blue & emerald silk ribbons. Complete the White Peacock Feather Quest to unwrap!',
+      description: 'An iridescent pearl-white gift box shimmering with sapphire-blue & emerald silk ribbons. Unseal your secret letter to unwrap!',
       mysteryClue: 'Clue: Luminous, royal, crowned with crystal plumage, and crafted specially for our graceful White Peacock 🦚💎',
       revealMessage: 'Happy Rakhi 2026, Thanishqa (White Peacock)! 🦚✨ May your life be crowned with glory, good fortune, and everlasting smiles!'
     }
@@ -398,6 +398,164 @@ export const RECIPIENTS = {
       mysteryClue: 'Clue: Fluffy, adorable, sweet, and made specially for our favorite meadow rabbit 🥕✨',
       revealMessage: 'Happy Rakhi 2026, Hanvika (Rabbit)! 🐰🥕 May your days be filled with sweet blessings, high hops, and endless happiness!'
     }
+  },
+
+  nirvika: {
+    id: 'nirvika',
+    name: 'Nirvika',
+    nickname: 'Swan',
+    relation: 'Wonderful Sister 🦢',
+    roleTag: 'The Enchanted Moonlit Swan 🦢✨',
+    emoji: '🦢',
+    mascotEmoji: '🪷',
+    password: 'brother',
+    hint: 'Who sent you this special Rakhi surprise? (Try "brother"!)',
+    welcomeQuote: '"Like a graceful swan on a calm moonlit lake, may your life always shine with serenity, elegance, and pure joy. Happy Raksha Bandhan 2026! 🦢🌙"',
+    theme: {
+      key: 'swan-lake',
+      primary: '#818cf8',
+      primaryRgb: '129, 140, 248',
+      secondary: '#c084fc',
+      secondaryRgb: '192, 132, 252',
+      accent: '#e0e7ff',
+      accentRgb: '224, 231, 255',
+      bgDark: '#060814',
+      bgGradient: 'radial-gradient(ellipse at top, #1e1b4b 0%, #0f172a 50%, #030712 100%)',
+      cardBg: 'rgba(15, 23, 42, 0.7)',
+      cardBorder: 'rgba(165, 180, 252, 0.35)',
+      glowColor: 'rgba(129, 140, 248, 0.55)',
+      textPrimary: '#f8fafc',
+      textSecondary: '#c7d2fe',
+      fontHeading: "'Outfit', sans-serif",
+      fontAccent: "'Caveat', cursive",
+      badgeGradient: 'linear-gradient(135deg, #818cf8, #c084fc)',
+      highlightTag: 'Moonlit Lake Sanctuary 🦢🌙'
+    },
+    particles: {
+      type: 'nirvika',
+      shapes: ['firefly', 'mist', 'lotusPetal', 'starlight', 'sparkle'],
+      colors: ['#ffffff', '#c7d2fe', '#818cf8', '#e0e7ff', '#fbcfe8', '#fef08a'],
+      density: 36,
+      speed: 0.8
+    },
+    audioProfile: {
+      theme: 'nirvika',
+      mascotSound: 'swanChime',
+      clickSound: 'waterRipple',
+      soundTitle: 'Moonlit Lake Harps & Serene Swan Calls 🦢🌙'
+    },
+    hero: {
+      title: 'Welcome to Nirvika\'s Enchanted Moonlit Lake 🦢🌙',
+      subtitle: 'A serene, glowing sanctuary of reflective waters, silver mist, blooming moonlotuses, and sibling affection.',
+      mascotName: 'Graceful Moonlit Swan Nirvika 🦢',
+      mascotActionText: 'Tap the Swan to watch the serene moonlit glide & feather ripple dance! 🦢💃'
+    },
+    interactiveWidget: {
+      type: 'swanRipples',
+      title: 'Swan Lake Ripples & Moonlit Firefly Jar 🦢🪷',
+      prompt: 'Tap to send glowing ripples across the lake and summon dancing fireflies!',
+      actionLabel: 'Send Moonlit Lake Blessing! 🦢✨',
+      statLabel: 'Firefly Blessings Sent:',
+      quotes: [
+        '“Gliding through life with infinite elegance, poise, and brilliance!” 🦢✨',
+        '“Forever bringing peace, serenity, and glowing smiles to our bond!” 🌙',
+        '“May your Raksha Bandhan shine as radiant as the moon over the lake!” 🪷',
+        '“Pure heart, graceful spirit, and an unforgettable sister!” 💎',
+        '“Wishing you a serene, blessed, and magical Raksha Bandhan 2026!” 🎀'
+      ]
+    },
+    letterPreview: {
+      title: 'A Special Note for Nirvika (Swan) 📜',
+      tag: 'From Your Brother',
+      teaserText: 'Dear Nirvika (our graceful Swan!), your calming presence, beautiful kindness, and gentle strength make every moment brighter. On this Raksha Bandhan 2026, I promise to always protect your peaceful smile, support your highest dreams, and stand by you in every chapter of life. May your journey always be illuminated by starlight and boundless happiness. Happy Rakhi!',
+      signature: 'With Infinite Sisterly Warmth & Starlight Blessings! 🦢✨'
+    },
+    giftTeaser: {
+      title: 'Nirvika\'s Moonlit Swan Gift Vault 🎁',
+      badge: 'Rakhi Special',
+      description: 'A silver-lavender surprise box shimmering with pearl-white silk ribbons and lotus charms. Complete the Moonlit Swan Lake Quest to unwrap!',
+      mysteryClue: 'Clue: Serene, luminous, crowned with silver moonlight, and crafted specially for our graceful Swan 🦢🌙',
+      revealMessage: 'Happy Rakhi 2026, Nirvika (Swan)! 🦢✨ May your life be crowned with peace, good fortune, and everlasting elegance!'
+    }
+  },
+
+  krishvi: {
+    id: 'krishvi',
+    name: 'Krishvi',
+    nickname: 'Butterfly',
+    relation: 'Wonderful Sister 🦋',
+    roleTag: 'The Radiant Infinite Butterfly 🦋🌸',
+    emoji: '🦋',
+    mascotEmoji: '🌸',
+    password: 'brother',
+    hint: 'Who sent you this special Rakhi surprise? (Try "brother"!)',
+    welcomeQuote: '"Spread your vibrant wings of joy, dance freely in the garden of dreams, and let your spirit soar. Happy Raksha Bandhan 2026! 🦋✨"',
+    theme: {
+      key: 'butterfly-garden',
+      primary: '#ec4899',
+      primaryRgb: '236, 72, 153',
+      secondary: '#10b981',
+      secondaryRgb: '16, 185, 129',
+      accent: '#a7f3d0',
+      accentRgb: '167, 243, 208',
+      bgDark: '#051510',
+      bgGradient: 'radial-gradient(ellipse at top, #14352a 0%, #0a1f18 50%, #030d0a 100%)',
+      cardBg: 'rgba(10, 31, 24, 0.7)',
+      cardBorder: 'rgba(52, 211, 153, 0.35)',
+      glowColor: 'rgba(236, 72, 153, 0.55)',
+      textPrimary: '#f0fdf4',
+      textSecondary: '#bbf7d0',
+      fontHeading: "'Outfit', sans-serif",
+      fontAccent: "'Caveat', cursive",
+      badgeGradient: 'linear-gradient(135deg, #ec4899, #10b981)',
+      highlightTag: 'Infinite Butterfly Garden 🦋🌸'
+    },
+    particles: {
+      type: 'krishvi',
+      shapes: ['butterflyMini', 'pollen', 'petal', 'flower', 'sparkle'],
+      colors: ['#ec4899', '#f472b6', '#34d399', '#a7f3d0', '#fde047', '#ffffff'],
+      density: 38,
+      speed: 0.9
+    },
+    audioProfile: {
+      theme: 'krishvi',
+      mascotSound: 'butterflyFlutter',
+      clickSound: 'floralChime',
+      soundTitle: 'Infinite Butterfly Garden Flutters & Bloom Chimes 🦋🌸'
+    },
+    hero: {
+      title: 'Welcome to Krishvi\'s Infinite Butterfly Garden 🦋🌸',
+      subtitle: 'A magical botanical realm of giant glowing blossoms, floating petals, radiant butterflies, and sister sparkles.',
+      mascotName: 'Radiant Butterfly Krishvi 🦋',
+      mascotActionText: 'Tap the Butterfly to watch the joyful flower flutter & sparkle dance! 🦋💃'
+    },
+    interactiveWidget: {
+      type: 'butterflyGarden',
+      title: 'Nectar Bloom & Butterfly Sparkle Meter 🦋🌸',
+      prompt: 'Tap to bloom magical garden flowers and release fluttering rainbow butterflies!',
+      actionLabel: 'Release Fluttering Butterflies! 🦋✨',
+      statLabel: 'Butterflies Released:',
+      quotes: [
+        '“Spreading colors, freedom, and contagious happiness wherever you fly!” 🦋🌸',
+        '“A friendship and sisterly bond as vibrant and everlasting as spring!” 🌺',
+        '“May your Raksha Bandhan blossom with radiant dreams and sweet triumphs!” 🌷',
+        '“Free spirit, brilliant heart, and endless creative magic!” 🌟',
+        '“Wishing you a joyful, colorful, and blessed Raksha Bandhan 2026!” 🎀'
+      ]
+    },
+    letterPreview: {
+      title: 'A Special Note for Krishvi (Butterfly) 📜',
+      tag: 'From Your Brother',
+      teaserText: 'Dear Krishvi (our vibrant Butterfly!), your boundless creativity, cheerful spirit, and sparkling enthusiasm fill every day with warmth and excitement. Thank you for being such a wonderful, inspiring, and lovable sister who always brightens our lives. On this Raksha Bandhan 2026, I promise to always stand by your side, celebrate your milestones, and protect your happiness forever!',
+      signature: 'With Infinite Love & Butterfly Flutter Blessings! 🦋✨'
+    },
+    giftTeaser: {
+      title: 'Krishvi\'s Botanical Butterfly Gift Box 🎁',
+      badge: 'Rakhi Special',
+      description: 'A vibrant blossom-pink and mint-emerald surprise box tied with golden silk ribbons. Complete the Butterfly Garden Quest to unwrap!',
+      mysteryClue: 'Clue: Colorful, magical, scented with spring blossoms, and crafted specially for our lovely Butterfly 🦋🌸',
+      revealMessage: 'Happy Rakhi 2026, Krishvi (Butterfly)! 🦋🌸 May your days be filled with sweet nectar victories, colorful flights, and everlasting joy!'
+    }
   }
 };
 
@@ -408,7 +566,7 @@ export const RECIPIENT_LIST = Object.values(RECIPIENTS);
  */
 export const resetAllProgression = () => {
   try {
-    const ids = ['chiti', 'duck', 'cat', 'peacock', 'hanvika'];
+    const ids = ['chiti', 'duck', 'cat', 'peacock', 'hanvika', 'nirvika', 'krishvi'];
     ids.forEach((id) => {
       sessionStorage.removeItem(`rakhi_2026_max_level_${id}`);
       sessionStorage.removeItem(`rakhi_2026_curr_level_${id}`);

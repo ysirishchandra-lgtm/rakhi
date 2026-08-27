@@ -70,6 +70,12 @@ export default function ParticleCanvas({ recipient }) {
           this.drawCatShape(c);
         } else if (type === 'peacock') {
           this.drawPeacockShape(c);
+        } else if (type === 'rabbit' || type === 'hanvika') {
+          this.drawRabbitShape(c);
+        } else if (type === 'nirvika' || type === 'swan') {
+          this.drawSwanShape(c);
+        } else if (type === 'krishvi' || type === 'butterfly') {
+          this.drawButterflyShape(c);
         }
 
         c.restore();
@@ -275,6 +281,146 @@ export default function ParticleCanvas({ recipient }) {
             else c.lineTo(px, py);
           }
           c.closePath();
+          c.fill();
+        }
+      }
+
+      // 🐰 RABBIT / HANVIKA: Mini Carrots, Sakura Petals, Fluffy Hearts, Sparkles
+      drawRabbitShape(c) {
+        const s = this.size * 0.65;
+        if (this.shapeKind === 0) {
+          // Mini Orange Carrot
+          c.fillStyle = '#f97316';
+          c.beginPath();
+          c.moveTo(-s * 0.4, -s * 0.4);
+          c.lineTo(s * 0.4, -s * 0.4);
+          c.lineTo(0, s * 0.8);
+          c.closePath();
+          c.fill();
+          // Carrot green leaf tip
+          c.fillStyle = '#22c55e';
+          c.beginPath();
+          c.arc(0, -s * 0.5, s * 0.2, 0, Math.PI * 2);
+          c.fill();
+        } else if (this.shapeKind === 1) {
+          // Fluffy Pastel Heart
+          c.fillStyle = this.color;
+          c.beginPath();
+          c.moveTo(0, -s * 0.4);
+          c.bezierCurveTo(-s * 0.8, -s, -s * 1.2, 0, 0, s);
+          c.bezierCurveTo(s * 1.2, 0, s * 0.8, -s, 0, -s * 0.4);
+          c.fill();
+        } else {
+          // Sakura Flower Petal
+          c.fillStyle = this.color;
+          c.beginPath();
+          c.ellipse(0, 0, s * 0.8, s * 0.45, Math.PI / 4, 0, Math.PI * 2);
+          c.fill();
+        }
+      }
+
+      // 🦢 NIRVIKA / SWAN: Fireflies, Lake Mist, White Lotus Petals, Star Gems
+      drawSwanShape(c) {
+        const s = this.size * 0.65;
+        if (this.shapeKind === 0) {
+          // Firefly Glowing Orb with Soft Aura
+          const glowGrad = c.createRadialGradient(0, 0, 0, 0, 0, s * 1.4);
+          glowGrad.addColorStop(0, '#ffffff');
+          glowGrad.addColorStop(0.3, '#fef08a');
+          glowGrad.addColorStop(0.7, 'rgba(129, 140, 248, 0.4)');
+          glowGrad.addColorStop(1, 'rgba(129, 140, 248, 0)');
+          c.fillStyle = glowGrad;
+          c.beginPath();
+          c.arc(0, 0, s * 1.4, 0, Math.PI * 2);
+          c.fill();
+        } else if (this.shapeKind === 1) {
+          // Lake Mist Puff
+          c.fillStyle = 'rgba(224, 231, 255, 0.25)';
+          c.beginPath();
+          c.arc(-s * 0.3, 0, s * 0.6, 0, Math.PI * 2);
+          c.arc(s * 0.3, 0, s * 0.5, 0, Math.PI * 2);
+          c.arc(0, -s * 0.2, s * 0.7, 0, Math.PI * 2);
+          c.fill();
+        } else if (this.shapeKind === 2) {
+          // White Moonlit Lotus Petal
+          c.fillStyle = this.color;
+          c.beginPath();
+          c.moveTo(0, -s * 1.1);
+          c.quadraticCurveTo(s * 0.6, 0, 0, s * 1.1);
+          c.quadraticCurveTo(-s * 0.6, 0, 0, -s * 1.1);
+          c.fill();
+          c.strokeStyle = '#ffffff';
+          c.lineWidth = 0.8;
+          c.stroke();
+        } else {
+          // Starburst Diamond
+          c.fillStyle = '#ffffff';
+          c.beginPath();
+          for (let i = 0; i < 8; i++) {
+            const r = i % 2 === 0 ? s * 1.1 : s * 0.25;
+            const a = (i * Math.PI) / 4;
+            const px = Math.cos(a) * r;
+            const py = Math.sin(a) * r;
+            if (i === 0) c.moveTo(px, py);
+            else c.lineTo(px, py);
+          }
+          c.closePath();
+          c.fill();
+        }
+      }
+
+      // 🦋 KRISHVI / BUTTERFLY: Fluttering Mini Butterflies, Glowing Pollen, Garden Blossoms
+      drawButterflyShape(c) {
+        const s = this.size * 0.65;
+        if (this.shapeKind === 0) {
+          // Mini Fluttering Butterfly Silhouette
+          c.fillStyle = this.color;
+          // Left top wing
+          c.beginPath();
+          c.ellipse(-s * 0.45, -s * 0.35, s * 0.45, s * 0.3, -Math.PI / 6, 0, Math.PI * 2);
+          c.fill();
+          // Right top wing
+          c.beginPath();
+          c.ellipse(s * 0.45, -s * 0.35, s * 0.45, s * 0.3, Math.PI / 6, 0, Math.PI * 2);
+          c.fill();
+          // Left bot wing
+          c.beginPath();
+          c.ellipse(-s * 0.35, s * 0.3, s * 0.35, s * 0.22, Math.PI / 6, 0, Math.PI * 2);
+          c.fill();
+          // Right bot wing
+          c.beginPath();
+          c.ellipse(s * 0.35, s * 0.3, s * 0.35, s * 0.22, -Math.PI / 6, 0, Math.PI * 2);
+          c.fill();
+          // Body center line
+          c.fillStyle = '#ffffff';
+          c.beginPath();
+          c.ellipse(0, 0, s * 0.1, s * 0.45, 0, 0, Math.PI * 2);
+          c.fill();
+        } else if (this.shapeKind === 1) {
+          // Glowing Golden Pollen Orb
+          const pollenGrad = c.createRadialGradient(0, 0, 0, 0, 0, s * 1.2);
+          pollenGrad.addColorStop(0, '#ffffff');
+          pollenGrad.addColorStop(0.3, '#fde047');
+          pollenGrad.addColorStop(0.7, 'rgba(236, 72, 153, 0.4)');
+          pollenGrad.addColorStop(1, 'rgba(52, 211, 153, 0)');
+          c.fillStyle = pollenGrad;
+          c.beginPath();
+          c.arc(0, 0, s * 1.2, 0, Math.PI * 2);
+          c.fill();
+        } else {
+          // Vibrant Blossom Flower
+          c.fillStyle = this.color;
+          c.beginPath();
+          for (let i = 0; i < 5; i++) {
+            const angle = (i * Math.PI * 2) / 5;
+            const px = Math.cos(angle) * s * 0.65;
+            const py = Math.sin(angle) * s * 0.65;
+            c.arc(px, py, s * 0.32, 0, Math.PI * 2);
+          }
+          c.fill();
+          c.fillStyle = '#fde047';
+          c.beginPath();
+          c.arc(0, 0, s * 0.2, 0, Math.PI * 2);
           c.fill();
         }
       }

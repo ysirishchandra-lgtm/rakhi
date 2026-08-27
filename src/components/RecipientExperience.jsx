@@ -6,12 +6,11 @@ import InteractiveWidget from './InteractiveWidget';
 import LetterCard from './LetterCard';
 import GiftTeaserCard from './GiftTeaserCard';
 
-// Dedicated Multi-Level Mini-Games
+// Dedicated Multi-Level Mini-Games for Young Sisters
 import ChitiGame from './games/ChitiGame';
-import DuckGame from './games/DuckGame';
-import CatGame from './games/CatGame';
-import PeacockGame from './games/PeacockGame';
 import RabbitGame from './games/RabbitGame';
+import SwanGame from './games/SwanGame';
+import ButterflyGame from './games/ButterflyGame';
 
 import { Sparkles, Heart, Trophy, CheckCircle, Lock, ArrowRight, ArrowLeft, Star, Gift, Mail, Music } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -20,7 +19,11 @@ import { soundFx } from '../services/soundEffects';
 export default function RecipientExperience({ recipient, onLogout }) {
   const { theme, hero } = recipient;
 
-  // Level Progression: 1: Mascot Dance, 2: Affinity Feature, 3: Quest Game, 4: Secret Letter, 5: Grand Gift Box
+  // Ashwidha, Grishma, and Thanishqa are B.Tech students -> No arcade games (Direct 4-level mature experience)
+  const hasGame = recipient.id !== 'cat' && recipient.id !== 'duck' && recipient.id !== 'peacock';
+  const totalLevels = hasGame ? 5 : 4;
+
+  // Level Progression State
   const [currentLevel, setCurrentLevel] = useState(1);
   const [maxUnlockedLevel, setMaxUnlockedLevel] = useState(1);
 
@@ -45,10 +48,16 @@ export default function RecipientExperience({ recipient, onLogout }) {
       if (savedSeal) setIsSealBroken(true);
 
       let derivedMax = 1;
-      if (savedDanced) derivedMax = Math.max(derivedMax, 2);
-      if (savedWidget) derivedMax = Math.max(derivedMax, 3);
-      if (savedGame) derivedMax = Math.max(derivedMax, 4);
-      if (savedSeal) derivedMax = Math.max(derivedMax, 5);
+      if (hasGame) {
+        if (savedDanced) derivedMax = Math.max(derivedMax, 2);
+        if (savedWidget) derivedMax = Math.max(derivedMax, 3);
+        if (savedGame) derivedMax = Math.max(derivedMax, 4);
+        if (savedSeal) derivedMax = Math.max(derivedMax, 5);
+      } else {
+        if (savedDanced) derivedMax = Math.max(derivedMax, 2);
+        if (savedWidget) derivedMax = Math.max(derivedMax, 3);
+        if (savedSeal) derivedMax = Math.max(derivedMax, 4);
+      }
       derivedMax = Math.max(derivedMax, isNaN(savedMax) ? 1 : savedMax);
 
       setMaxUnlockedLevel(derivedMax);
@@ -58,7 +67,7 @@ export default function RecipientExperience({ recipient, onLogout }) {
     } catch (err) {
       console.warn('Session access error:', err);
     }
-  }, [recipient.id]);
+  }, [recipient.id, hasGame]);
 
   const unlockUpToLevel = (levelNum) => {
     setMaxUnlockedLevel((prev) => {
@@ -70,9 +79,17 @@ export default function RecipientExperience({ recipient, onLogout }) {
     });
   };
 
+  const getEffectiveMax = () => {
+    if (hasGame) {
+      return isSealBroken ? 5 : isGameCompleted ? 4 : hasUsedWidget ? 3 : hasDanced ? 2 : maxUnlockedLevel;
+    }
+    return isSealBroken ? 4 : hasUsedWidget ? 3 : hasDanced ? 2 : maxUnlockedLevel;
+  };
+
+  const effectiveMax = getEffectiveMax();
+
   const goToLevel = (lvl) => {
-    const effectiveMax = isSealBroken ? 5 : isGameCompleted ? 4 : hasUsedWidget ? 3 : hasDanced ? 2 : maxUnlockedLevel;
-    if (lvl >= 1 && lvl <= 5 && lvl <= effectiveMax) {
+    if (lvl >= 1 && lvl <= totalLevels && lvl <= effectiveMax) {
       soundFx.playClick();
       setCurrentLevel(lvl);
       try {
@@ -111,13 +128,32 @@ export default function RecipientExperience({ recipient, onLogout }) {
     } catch (e) {}
   };
 
-  // Level 3: Mini-Game Complete
+  // Level 3: Mini-Game Complete (for hasGame sisters)
   const handleGameComplete = (score) => {
     setIsGameCompleted(true);
     unlockUpToLevel(4);
     try {
       sessionStorage.setItem(`rakhi_2026_game_cleared_${recipient.id}`, 'true');
     } catch (e) {}
+  };
+
+  // Seal Break Complete (Level 4 for hasGame sisters, Level 3 for B.Tech sisters)
+  const handleBreakSeal = () => {
+    soundFx.playSealBreak();
+    setIsSealBroken(true);
+    const nextLvl = hasGame ? 5 : 4;
+    unlockUpToLevel(nextLvl);
+    try {
+      sessionStorage.setItem(`rakhi_2026_seal_broken_${recipient.id}`, 'true');
+      sessionStorage.setItem(`rakhi_2026_max_level_${recipient.id}`, nextLvl.toString());
+    } catch (e) {}
+
+    confetti({
+      particleCount: 120,
+      spread: 80,
+      origin: { y: 0.6 },
+      colors: recipient.particles?.colors || ['#ffd166', '#ff3366', '#ffffff']
+    });
   };
 
   // Reset this character's progress back to Level 1
@@ -149,24 +185,6 @@ export default function RecipientExperience({ recipient, onLogout }) {
     } catch (e) {}
   };
 
-  // Level 4: Seal Break Complete
-  const handleBreakSeal = () => {
-    soundFx.playSealBreak();
-    setIsSealBroken(true);
-    unlockUpToLevel(5);
-    try {
-      sessionStorage.setItem(`rakhi_2026_seal_broken_${recipient.id}`, 'true');
-      sessionStorage.setItem(`rakhi_2026_max_level_${recipient.id}`, '5');
-    } catch (e) {}
-
-    confetti({
-      particleCount: 120,
-      spread: 80,
-      origin: { y: 0.6 },
-      colors: recipient.particles?.colors || ['#ffd166', '#ff3366', '#ffffff']
-    });
-  };
-
   const getWidgetEmoji = (id) => {
     switch (id) {
       case 'chiti': return '🧸';
@@ -174,32 +192,37 @@ export default function RecipientExperience({ recipient, onLogout }) {
       case 'cat': return '🐾';
       case 'peacock': return '🦚';
       case 'hanvika': return '🥕';
+      case 'nirvika': return '🪷';
+      case 'krishvi': return '🦋';
       default: return '✨';
     }
   };
 
-  const effectiveMax = isSealBroken ? 5 : isGameCompleted ? 4 : hasUsedWidget ? 3 : hasDanced ? 2 : maxUnlockedLevel;
-
-  const LEVEL_ITEMS = [
-    { id: 1, label: 'Level 1', title: 'Mascot Dance', icon: '💃' },
-    { id: 2, label: 'Level 2', title: recipient.interactiveWidget.title, icon: getWidgetEmoji(recipient.id) },
-    { id: 3, label: 'Level 3', title: 'Quest Game', icon: '🎮' },
-    { id: 4, label: 'Level 4', title: 'Secret Letter', icon: '💌' },
-    { id: 5, label: 'Level 5', title: 'Grand Gift Box', icon: '🎁' }
-  ];
+  const LEVEL_ITEMS = hasGame
+    ? [
+        { id: 1, label: 'Level 1', title: 'Mascot Dance', icon: '💃' },
+        { id: 2, label: 'Level 2', title: recipient.interactiveWidget.title, icon: getWidgetEmoji(recipient.id) },
+        { id: 3, label: 'Level 3', title: 'Quest Game', icon: '🎮' },
+        { id: 4, label: 'Level 4', title: 'Secret Letter', icon: '💌' },
+        { id: 5, label: 'Level 5', title: 'Grand Gift Box', icon: '🎁' }
+      ]
+    : [
+        { id: 1, label: 'Level 1', title: 'Mascot Spotlight', icon: '💃' },
+        { id: 2, label: 'Level 2', title: recipient.interactiveWidget.title, icon: getWidgetEmoji(recipient.id) },
+        { id: 3, label: 'Level 3', title: 'Secret Letter', icon: '💌' },
+        { id: 4, label: 'Level 4', title: 'Grand Gift Box', icon: '🎁' }
+      ];
 
   const renderMiniGame = () => {
     switch (recipient.id) {
       case 'chiti':
         return <ChitiGame recipient={recipient} onComplete={handleGameComplete} />;
-      case 'duck':
-        return <DuckGame recipient={recipient} onComplete={handleGameComplete} />;
-      case 'cat':
-        return <CatGame recipient={recipient} onComplete={handleGameComplete} />;
-      case 'peacock':
-        return <PeacockGame recipient={recipient} onComplete={handleGameComplete} />;
       case 'hanvika':
         return <RabbitGame recipient={recipient} onComplete={handleGameComplete} />;
+      case 'nirvika':
+        return <SwanGame recipient={recipient} onComplete={handleGameComplete} />;
+      case 'krishvi':
+        return <ButterflyGame recipient={recipient} onComplete={handleGameComplete} />;
       default:
         return null;
     }
@@ -224,6 +247,13 @@ export default function RecipientExperience({ recipient, onLogout }) {
         '--theme-badge-gradient': theme.badgeGradient
       }}
     >
+      {/* Dynamic Environmental Background Decor Layer */}
+      <div className="world-env-backdrop" aria-hidden="true">
+        <div className="env-layer-distant" />
+        <div className="env-layer-mid" />
+        <div className="env-layer-glow" />
+      </div>
+
       {/* Ambient Particle Canvas */}
       <ParticleCanvas recipient={recipient} />
 
@@ -240,14 +270,17 @@ export default function RecipientExperience({ recipient, onLogout }) {
           <div className="level-stepper-header">
             <div className="stepper-badge">
               <Star size={14} className="text-yellow-400 animate-spin-slow" />
-              <span>Rakhi 2026 Quest Journey</span>
+              <span>Rakhi 2026 Journey</span>
             </div>
             <span className="stepper-stage-count">
-              Level <strong>{currentLevel}</strong> of <strong>5</strong>
+              Level <strong>{currentLevel}</strong> of <strong>{totalLevels}</strong>
             </span>
           </div>
 
-          <div className="level-stepper-track">
+          <div
+            className="level-stepper-track"
+            style={{ gridTemplateColumns: `repeat(${totalLevels}, 1fr)` }}
+          >
             {LEVEL_ITEMS.map((item) => {
               const isCurrent = currentLevel === item.id;
               const isUnlocked = item.id <= effectiveMax;
@@ -320,7 +353,7 @@ export default function RecipientExperience({ recipient, onLogout }) {
                 </div>
               ) : (
                 <p className="level-prompt-hint">
-                  💡 <strong>Level 1 Objective:</strong> Tap the mascot above to watch their dance routine and unlock Level 2!
+                  💡 <strong>Level 1 Objective:</strong> Tap the mascot above to watch their signature animation and unlock Level 2!
                 </p>
               )}
             </div>
@@ -344,20 +377,20 @@ export default function RecipientExperience({ recipient, onLogout }) {
                 <div className="advance-banner animate-pop">
                   <div className="advance-info">
                     <CheckCircle size={20} className="text-green-400" />
-                    <span>Level 2 Power Unleashed! Level 3 Quest Unlocked!</span>
+                    <span>Level 2 Power Unleashed! {hasGame ? 'Level 3 Quest Unlocked!' : 'Secret Letter Ready!'}</span>
                   </div>
                   <button
                     type="button"
                     className="btn-next-level"
                     onClick={() => advanceToLevel(3)}
                   >
-                    <span>Proceed to Level 3 Quest 🎮</span>
+                    <span>{hasGame ? 'Proceed to Level 3 Quest 🎮' : 'Proceed to Secret Letter 💌'}</span>
                     <ArrowRight size={18} />
                   </button>
                 </div>
               ) : (
                 <p className="level-prompt-hint">
-                  💡 <strong>Level 2 Objective:</strong> Tap the action button above to share love sparks and unlock Level 3!
+                  💡 <strong>Level 2 Objective:</strong> Tap the action button above to share sisterly sparks and unlock Level 3!
                 </p>
               )}
             </div>
@@ -365,9 +398,9 @@ export default function RecipientExperience({ recipient, onLogout }) {
         )}
 
         {/* ----------------------------------------------------
-            LEVEL 3: ADVENTURE MINI-GAME
+            LEVEL 3: ADVENTURE MINI-GAME (for hasGame) OR SECRET LETTER (for B.Tech)
            ---------------------------------------------------- */}
-        {currentLevel === 3 && (
+        {currentLevel === 3 && hasGame && (
           <section className="level-stage-view animate-pop">
             {renderMiniGame()}
 
@@ -397,10 +430,57 @@ export default function RecipientExperience({ recipient, onLogout }) {
           </section>
         )}
 
+        {/* Level 3 for B.Tech sisters (No game): Sacred Seal & Letter */}
+        {currentLevel === 3 && !hasGame && (
+          <section className="level-stage-view animate-pop">
+            {!isSealBroken ? (
+              <div className="seal-break-card animate-pop">
+                <div className="seal-wax-emblem animate-pulse" onClick={handleBreakSeal}>
+                  <span className="seal-wax-icon">🔐</span>
+                </div>
+                <h3 className="seal-break-title">Break the Golden Rakhi Seal ✨</h3>
+                <p className="seal-break-desc">
+                  Tap below to break the ceremonial golden wax seal and unlock your handwritten letter.
+                </p>
+                <button
+                  id="btn-break-wax-seal"
+                  className="btn-break-seal-action"
+                  onClick={handleBreakSeal}
+                >
+                  <Sparkles size={18} />
+                  <span>Unseal Brother's Letter ✨</span>
+                </button>
+              </div>
+            ) : (
+              <>
+                <LetterCard recipient={recipient} isUnlocked={true} />
+
+                {/* Level 3 Progression Action */}
+                <div className="level-advance-card">
+                  <div className="advance-banner animate-pop">
+                    <div className="advance-info">
+                      <CheckCircle size={20} className="text-green-400" />
+                      <span>Letter Unsealed! The Grand Gift Box Awaits!</span>
+                    </div>
+                    <button
+                      type="button"
+                      className="btn-next-level"
+                      onClick={() => advanceToLevel(4)}
+                    >
+                      <span>Proceed to Grand Gift Box 🎁</span>
+                      <ArrowRight size={18} />
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+          </section>
+        )}
+
         {/* ----------------------------------------------------
-            LEVEL 4: SACRED SEAL & HEARTFELT LETTER
+            LEVEL 4: SACRED SEAL & HEARTFELT LETTER (for hasGame) OR GRAND GIFT BOX (for B.Tech)
            ---------------------------------------------------- */}
-        {currentLevel === 4 && (
+        {currentLevel === 4 && hasGame && (
           <section className="level-stage-view animate-pop">
             {!isSealBroken ? (
               <div className="seal-break-card animate-pop">
@@ -446,10 +526,17 @@ export default function RecipientExperience({ recipient, onLogout }) {
           </section>
         )}
 
+        {/* Level 4 for B.Tech sisters: Grand Gift Box Reveal */}
+        {currentLevel === 4 && !hasGame && (
+          <section className="level-stage-view animate-pop">
+            <GiftTeaserCard recipient={recipient} isUnlocked={true} />
+          </section>
+        )}
+
         {/* ----------------------------------------------------
-            LEVEL 5: GRAND RAKHI 2026 GIFT REVEAL
+            LEVEL 5: GRAND RAKHI 2026 GIFT REVEAL (for hasGame sisters)
            ---------------------------------------------------- */}
-        {currentLevel === 5 && (
+        {currentLevel === 5 && hasGame && (
           <section className="level-stage-view animate-pop">
             <GiftTeaserCard recipient={recipient} isUnlocked={true} />
           </section>
@@ -468,14 +555,14 @@ export default function RecipientExperience({ recipient, onLogout }) {
           </button>
 
           <span className="level-nav-indicator">
-            Level {currentLevel} of 5
+            Level {currentLevel} of {totalLevels}
           </span>
 
           <button
             type="button"
             className="btn-nav-level next"
             onClick={() => goToLevel(currentLevel + 1)}
-            disabled={currentLevel >= effectiveMax || currentLevel === 5}
+            disabled={currentLevel >= effectiveMax || currentLevel === totalLevels}
           >
             <span>Next Level</span>
             <ArrowRight size={16} />
